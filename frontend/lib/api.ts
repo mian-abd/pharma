@@ -6,6 +6,7 @@ import type {
   DrugCommandCenter,
   DrugCorePanel,
   InfluencePanel,
+  MediaBriefing,
   MLInsightsPanel,
   NewsItem,
   RegulatoryEvent,
@@ -50,6 +51,15 @@ export function useDashboardDrug(name: string | null) {
     { revalidateOnFocus: false, dedupingInterval: 20000 }
   );
   return { snapshot: data, isLoading, isError: !!error, error };
+}
+
+export function useLiveBriefing() {
+  const { data, error, isLoading } = useSWR<MediaBriefing>(
+    '/api/media/live-briefing',
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 300000, refreshInterval: 300000 }
+  );
+  return { briefing: data, isLoading, isError: !!error, error };
 }
 
 // ----------------------------------------------------------------- Panels --

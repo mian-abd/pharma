@@ -97,6 +97,53 @@ class ApprovalSnapshot(BaseModel):
     source_status: str
 
 
+class OrangeBookPatent(BaseModel):
+    patent_number: str
+    expire_date: Optional[str]
+    use_code: Optional[str]
+    drug_substance_flag: bool = False
+    drug_product_flag: bool = False
+
+
+class OrangeBookExclusivity(BaseModel):
+    code: str
+    expire_date: Optional[str]
+
+
+class OrangeBookSnapshot(BaseModel):
+    application_number: Optional[str]
+    applicant: Optional[str]
+    approval_date: Optional[str]
+    dosage_form_route: Optional[str]
+    reference_listed_drug: bool = False
+    reference_standard: bool = False
+    generic_equivalent_count: int = 0
+    therapeutic_equivalence_codes: List[str]
+    patents: List[OrangeBookPatent]
+    exclusivities: List[OrangeBookExclusivity]
+    source_status: str
+
+
+class FundingProject(BaseModel):
+    project_title: str
+    fiscal_year: Optional[int]
+    award_amount_usd: float
+    organization: Optional[str]
+    principal_investigator: Optional[str]
+    project_number: Optional[str]
+    project_end_date: Optional[str]
+
+
+class FundingSnapshot(BaseModel):
+    matched_project_count: int
+    active_project_count: int
+    total_award_amount_usd: float
+    top_agencies: List[str]
+    top_organizations: List[str]
+    recent_projects: List[FundingProject]
+    source_status: str
+
+
 class PeerComparisonRow(BaseModel):
     rxcui: str
     brand_name: str
@@ -150,6 +197,23 @@ class MarketMover(BaseModel):
     note: str
 
 
+class MediaSource(BaseModel):
+    id: str
+    label: str
+    category: str
+    status: str
+    embed_url: Optional[str]
+    external_url: Optional[str]
+    note: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    video_id: Optional[str] = None
+
+
+class MediaBriefing(BaseModel):
+    generated_at: str
+    sources: List[MediaSource]
+
+
 class DashboardHome(BaseModel):
     generated_at: str
     ticker_items: List[str]
@@ -188,6 +252,8 @@ class DrugCommandCenter(BaseModel):
     market: MarketSnapshot
     evidence: EvidenceSnapshot
     approval: ApprovalSnapshot
+    orange_book: OrangeBookSnapshot
+    funding: FundingSnapshot
     influence: dict
     peer_comparison: PeerComparison
     live_alerts: List[DashboardAlert]

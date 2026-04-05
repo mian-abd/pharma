@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 
-from services.gateway.routers import dashboard, drugs, health, news, panels, search
+from services.gateway.routers import dashboard, drugs, health, media, news, panels, search
 from services.shared.config import settings
 
 logger = logging.getLogger(__name__)
@@ -40,6 +40,7 @@ app.include_router(search.router, prefix="/api")
 app.include_router(health.router, prefix="/api")
 app.include_router(dashboard.router, prefix="/api")
 app.include_router(news.router, prefix="/api")
+app.include_router(media.router, prefix="/api")
 
 
 @app.exception_handler(Exception)
@@ -92,4 +93,5 @@ async def root():
         "docs": "/docs",
         "health": "/api/health",
         "dashboard_home": "/api/dashboard/home",
+        "media_briefing": "/api/media/live-briefing",
     }

@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Play, Tv2, X, ExternalLink } from 'lucide-react';
+import { useLiveBriefing } from '@/lib/api';
 
-const STORAGE_KEY = 'pharmasignal-video';
+const STORAGE_KEY = 'pharmacortex-video';
 
 interface Channel {
   id: string;
@@ -138,11 +139,11 @@ function parseYouTubeUrl(input: string): { type: 'video' | 'channel' | null; id:
 
 function buildEmbedUrl(channel: Channel): string {
   if (channel.type === 'video' && channel.ytId) {
-    return `https://www.youtube.com/embed/${channel.ytId}?autoplay=1&mute=1&controls=1&enablejsapi=1&rel=0`;
+    return `https://www.youtube-nocookie.com/embed/${channel.ytId}?autoplay=1&mute=1&controls=1&enablejsapi=1&rel=0`;
   }
   if (channel.type === 'uploads' && channel.ytId) {
-    // Reliable fallback when a channel is not currently live
-    return `https://www.youtube.com/embed?listType=user_uploads&list=${channel.ytId}&autoplay=1&mute=1&controls=1&rel=0`;
+    const uploadsPlaylist = channel.ytId.startsWith('UC') ? `UU${channel.ytId.slice(2)}` : channel.ytId;
+    return `https://www.youtube-nocookie.com/embed/videoseries?list=${uploadsPlaylist}&autoplay=1&mute=1&controls=1&rel=0`;
   }
   if (channel.type === 'live' && channel.ytId) {
     return `https://www.youtube.com/embed/live_stream?channel=${channel.ytId}&autoplay=1&mute=1&controls=1&enablejsapi=1&rel=0`;
@@ -169,9 +170,10 @@ export default function HubVideoPlayer() {
   const [playing, setPlaying] = useState(true);
   const [customUrl, setCustomUrl] = useState('');
   const [customError, setCustomError] = useState('');
+  const { briefing } = useLiveBriefing();
 
-  // Restore from localStorage before paint (avoids flash of default channel).
-  useLayoutEffect(() => {
+  // Restore personalization after hydration so the initial SSR shell stays deterministic.
+  useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) return;
@@ -210,13 +212,30 @@ export default function HubVideoPlayer() {
     setPlaying(true);
   };
 
-  const embedUrl = useMemo(() => buildEmbedUrl(activeChannel), [activeChannel]);
-  const canEmbed = activeChannel.type !== 'external';
-  const externalUrl = activeChannel.externalUrl || (activeChannel.ytId
+  const resolvedSource = useMemo(
+    () => briefing?.sources?.find(source => source.id === activeChannel.id) ?? null,
+    [briefing, activeChannel.id]
+  );
+
+  const embedUrl = useMemo(() => {
+    if (resolvedSource?.embed_url) return resolvedSource.embed_url;
+    if (activeChannel.id.startsWith('custom-')) return buildEmbedUrl(activeChannel);
+    if (activeChannel.type === 'live' && activeChannel.ytId) {
+      return buildEmbedUrl({ ...activeChannel, type: 'uploads' });
+    }
+    return buildEmbedUrl(activeChannel);
+  }, [activeChannel, resolvedSource]);
+
+  const canEmbed = activeChannel.type !== 'external' && !!embedUrl;
+  const externalUrl = resolvedSource?.external_url || activeChannel.externalUrl || (activeChannel.ytId
     ? (activeChannel.type === 'video'
       ? `https://youtube.com/watch?v=${activeChannel.ytId}`
       : `https://youtube.com/channel/${activeChannel.ytId}`)
     : undefined);
+  const displayNote = resolvedSource?.note || activeChannel.note;
+  const statusLabel = activeChannel.type === 'external'
+    ? 'WEB'
+    : (resolvedSource?.status?.toUpperCase() || activeChannel.type.toUpperCase());
 
   return (
     <div className="hub-panel h-full flex flex-col">
@@ -227,6 +246,7 @@ export default function HubVideoPlayer() {
         </div>
         <div className="flex items-center gap-1.5">
           {(playing || activeChannel.type === 'external') && <div className="hub-live-dot" />}
+          <span className="text-[10px] font-mono text-muted-foreground">{statusLabel}</span>
           {playing && (
             <button
               onClick={() => setPlaying(false)}
@@ -310,9 +330,9 @@ export default function HubVideoPlayer() {
                   {canEmbed ? `Play ${activeChannel.label}` : `Open ${activeChannel.label}`}
                 </span>
               </button>
-              {activeChannel.note && (
+              {displayNote && (
                 <p className="text-[9px] text-muted-foreground font-mono text-center px-5 leading-relaxed">
-                  {activeChannel.note}
+                  {displayNote}
                 </p>
               )}
               {externalUrl && (
@@ -331,7 +351,7 @@ export default function HubVideoPlayer() {
 
         {/* Note */}
         <div className="shrink-0 px-2 py-1 text-[8px] text-muted-foreground font-mono border-t border-border/40 leading-tight">
-          Live streams are muted by default (browser autoplay policy). If a source has no active stream, use uploads or open source.
+          Live streams are muted by default. Sources now fall back to the latest upload when the channel is not actively live.
         </div>
       </div>
     </div>

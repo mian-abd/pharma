@@ -8,14 +8,19 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     anthropic_api_key: str = ""
     openfda_api_key: str = ""
+    youtube_api_key: str = ""
 
     # External API base URLs
     rxnorm_base_url: str = "https://rxnav.nlm.nih.gov"
     clinicaltrials_base_url: str = "https://clinicaltrials.gov/api/v2"
     pubmed_base_url: str = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+    nih_reporter_base_url: str = "https://api.reporter.nih.gov"
     dailymed_base_url: str = "https://dailymed.nlm.nih.gov/dailymed/services/v2"
     openfda_base_url: str = "https://api.fda.gov"
     fda_shortage_url: str = "https://api.fda.gov/drug/shortage.json"
+    orange_book_data_url: str = "https://www.fda.gov/media/76860/download?attachment="
+    orange_book_data_path: str = ""
+    youtube_api_base_url: str = "https://www.googleapis.com/youtube/v3"
     cms_formulary_url: str = ""
     cms_formulary_local_zip: str = ""
     cms_open_payments_csv_path: str = ""
@@ -26,7 +31,7 @@ class Settings(BaseSettings):
     cms_partd_spending_csv_path: str = ""
     fda_rss_drugs_url: str = "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/drugs/rss.xml"
     fda_rss_press_url: str = "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml"
-    pubmed_tool: str = "pharmasignal"
+    pubmed_tool: str = "pharmacortex"
     pubmed_email: str = ""
     cms_open_payments_data_year: int = 2023
     cms_partd_data_year: int = 2024
@@ -61,6 +66,9 @@ class Settings(BaseSettings):
     ttl_evidence: int = 21600        # 6 hours
     ttl_market: int = 86400          # 24 hours
     ttl_approval: int = 86400        # 24 hours
+    ttl_competition: int = 86400     # 24 hours
+    ttl_funding: int = 21600         # 6 hours
+    ttl_media: int = 900             # 15 minutes
     ttl_dashboard_home: int = 900    # 15 minutes
     ttl_dashboard_snapshot: int = 1800  # 30 minutes
 

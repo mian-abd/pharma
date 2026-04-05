@@ -324,6 +324,53 @@ export interface ApprovalSnapshot {
   source_status: string;
 }
 
+export interface OrangeBookPatent {
+  patent_number: string;
+  expire_date: string | null;
+  use_code: string | null;
+  drug_substance_flag: boolean;
+  drug_product_flag: boolean;
+}
+
+export interface OrangeBookExclusivity {
+  code: string;
+  expire_date: string | null;
+}
+
+export interface OrangeBookSnapshot {
+  application_number: string | null;
+  applicant: string | null;
+  approval_date: string | null;
+  dosage_form_route: string | null;
+  reference_listed_drug: boolean;
+  reference_standard: boolean;
+  generic_equivalent_count: number;
+  therapeutic_equivalence_codes: string[];
+  patents: OrangeBookPatent[];
+  exclusivities: OrangeBookExclusivity[];
+  source_status: string;
+}
+
+export interface FundingProject {
+  project_title: string;
+  fiscal_year: number | null;
+  award_amount_usd: number;
+  organization: string | null;
+  principal_investigator: string | null;
+  project_number: string | null;
+  project_end_date: string | null;
+}
+
+export interface FundingSnapshot {
+  matched_project_count: number;
+  active_project_count: number;
+  total_award_amount_usd: number;
+  top_agencies: string[];
+  top_organizations: string[];
+  recent_projects: FundingProject[];
+  source_status: string;
+}
+
 export interface PeerComparisonRow {
   rxcui: string;
   brand_name: string;
@@ -375,6 +422,23 @@ export interface MarketMover {
   market_spend_usd: number;
   yoy_spend_change_pct: number;
   note: string;
+}
+
+export interface MediaSource {
+  id: string;
+  label: string;
+  category: string;
+  status: string;
+  embed_url: string | null;
+  external_url: string | null;
+  note: string | null;
+  thumbnail_url: string | null;
+  video_id: string | null;
+}
+
+export interface MediaBriefing {
+  generated_at: string;
+  sources: MediaSource[];
 }
 
 export interface NewsItem {
@@ -429,6 +493,8 @@ export interface DrugCommandCenter extends DrugBundle {
   market: MarketSnapshot;
   evidence: EvidenceSnapshot;
   approval: ApprovalSnapshot;
+  orange_book: OrangeBookSnapshot;
+  funding: FundingSnapshot;
   influence: InfluencePanel;
   peer_comparison: PeerComparison;
   live_alerts: DashboardAlert[];

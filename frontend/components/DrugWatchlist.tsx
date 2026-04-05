@@ -17,7 +17,7 @@ interface DrugWatchlistProps {
   latestDrug?: { name: string; rxcui?: string; faersCount?: number; hasSignal?: boolean };
 }
 
-const STORAGE_KEY = 'pharmasignal_watchlist';
+const STORAGE_KEY = 'pharmacortex_watchlist';
 
 const SIGNAL_DOT: Record<string, string> = {
   critical: 'dot-red',

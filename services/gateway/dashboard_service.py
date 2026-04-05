@@ -8,15 +8,18 @@ import logging
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
+from services.competition.orange_book_client import get_orange_book_snapshot
 from services.dailymed.dailymed_client import get_label_history
 from services.drug_resolution.rxnorm_client import resolve_drug
 from services.fda_signals.drugsfda_client import get_approval_snapshot
 from services.fda_signals.shortage_client import get_shortage_status
 from services.gateway.orchestrator import DrugBundle, build_drug_bundle
 from services.market.partd_client import get_market_snapshot
+from services.media.youtube_client import get_media_briefing
 from services.news.fda_rss_client import get_fda_news_items
 from services.open_payments.payments_client import get_influence_panel
 from services.pubmed.pubmed_client import get_evidence_snapshot
+from services.research.nih_reporter_client import get_funding_snapshot
 from services.shared.cache import cache_get, cache_get_recent_drugs, cache_set
 from services.shared.config import settings
 from services.shared.dashboard_models import (
@@ -25,7 +28,10 @@ from services.shared.dashboard_models import (
     DashboardHome,
     DrugCommandCenter,
     FeaturedWatchCard,
+    FundingSnapshot,
     MarketMover,
+    MediaBriefing,
+    OrangeBookSnapshot,
     PeerComparison,
     PeerComparisonRow,
     SourceHealthItem,
@@ -50,6 +56,8 @@ _SOURCE_LABELS = {
     "label_history": "DailyMed",
     "shortage": "Drug Shortages",
     "approval": "Drugs@FDA",
+    "orange_book": "Orange Book",
+    "nih_reporter": "NIH RePORTER",
 }
 
 _SOURCE_PING_URLS = {
@@ -59,6 +67,7 @@ _SOURCE_PING_URLS = {
     "evidence": (f"{settings.pubmed_base_url}/einfo.fcgi?db=pubmed&retmode=json", "GET"),
     "approval": (f"{settings.openfda_base_url}/drug/drugsfda.json?limit=1", "GET"),
     "label_history": (f"{settings.dailymed_base_url}/spls.json?pagesize=1", "GET"),
+    "nih_reporter": (settings.nih_reporter_base_url, "GET"),
 }
 
 
@@ -118,6 +127,8 @@ async def _check_source_health() -> List[SourceHealthItem]:
     influence_status = "live" if (settings.cms_open_payments_csv_path or settings.cms_open_payments_csv_url) else "demo"
     items.append(SourceHealthItem(key="influence", label="CMS Open Payments", status=influence_status))
     items.append(SourceHealthItem(key="formulary", label="CMS Formulary", status="demo"))
+    orange_status = "live" if (settings.orange_book_data_path or settings.orange_book_data_url) else "demo"
+    items.append(SourceHealthItem(key="orange_book", label="Orange Book", status=orange_status))
 
     await cache_set(cache_key, [item.model_dump() for item in items], ttl=300)
     return items
@@ -573,6 +584,34 @@ def _build_source_health(bundle: DrugBundle, market_status: str, evidence_status
     ]
 
 
+def _empty_orange_book(application_number: Optional[str], status: str = "demo") -> OrangeBookSnapshot:
+    return OrangeBookSnapshot(
+        application_number=application_number,
+        applicant=None,
+        approval_date=None,
+        dosage_form_route=None,
+        reference_listed_drug=False,
+        reference_standard=False,
+        generic_equivalent_count=0,
+        therapeutic_equivalence_codes=[],
+        patents=[],
+        exclusivities=[],
+        source_status=status,
+    )
+
+
+def _empty_funding(status: str = "demo") -> FundingSnapshot:
+    return FundingSnapshot(
+        matched_project_count=0,
+        active_project_count=0,
+        total_award_amount_usd=0.0,
+        top_agencies=[],
+        top_organizations=[],
+        recent_projects=[],
+        source_status=status,
+    )
+
+
 def _access_score_from_formulary(formulary: list[dict]) -> float:
     if not formulary:
         return 0.0
@@ -657,6 +696,10 @@ async def build_drug_command_center(drug_name: str) -> DrugCommandCenter | None:
     market_task = asyncio.create_task(get_market_snapshot(drug_name, resolution.generic_name, resolution.brand_name))
     evidence_task = asyncio.create_task(get_evidence_snapshot(drug_name, resolution.generic_name))
     approval_task = asyncio.create_task(get_approval_snapshot(resolution.brand_name or drug_name, resolution.generic_name))
+    orange_book_task = asyncio.create_task(
+        get_orange_book_snapshot(resolution.brand_name or drug_name, resolution.generic_name, None)
+    )
+    funding_task = asyncio.create_task(get_funding_snapshot(drug_name, resolution.generic_name))
 
     bundle_result = await _await_with_timeout(bundle_task, 8.0)
     label_history = await _await_with_timeout(label_history_task, 4.0)
@@ -665,6 +708,8 @@ async def build_drug_command_center(drug_name: str) -> DrugCommandCenter | None:
     market = await _await_with_timeout(market_task, 4.0)
     evidence = await _await_with_timeout(evidence_task, 4.0)
     approval = await _await_with_timeout(approval_task, 3.0)
+    orange_book = await _await_with_timeout(orange_book_task, 5.0)
+    funding = await _await_with_timeout(funding_task, 5.0)
 
     bundle: DrugBundle
     if isinstance(bundle_result, Exception) or bundle_result is None:
@@ -737,6 +782,14 @@ async def build_drug_command_center(drug_name: str) -> DrugCommandCenter | None:
             route=None,
             source_status="demo",
         )
+    if isinstance(orange_book, Exception):
+        orange_book = _empty_orange_book(approval.application_number, status="demo")
+    else:
+        orange_book = orange_book.model_copy(update={
+            "application_number": orange_book.application_number or approval.application_number
+        })
+    if isinstance(funding, Exception):
+        funding = _empty_funding(status="demo")
 
     source_health = _build_source_health(
         bundle,
@@ -745,6 +798,20 @@ async def build_drug_command_center(drug_name: str) -> DrugCommandCenter | None:
         influence_status=influence_panel.source_status,
         approval_status=approval.source_status,
     )
+    source_health.extend([
+        SourceHealthItem(
+            key="orange_book",
+            label=_SOURCE_LABELS["orange_book"],
+            status=orange_book.source_status,
+            detail="competition and exclusivity context" if orange_book.source_status == "live" else None,
+        ),
+        SourceHealthItem(
+            key="nih_reporter",
+            label=_SOURCE_LABELS["nih_reporter"],
+            status=funding.source_status,
+            detail="federal research activity" if funding.source_status == "live" else None,
+        ),
+    ])
     peer_comparison = _build_peer_comparison(bundle, market_payload, influence_panel.model_dump())
     live_alerts = _build_alerts(bundle, shortage_dict, evidence_payload["publication_count_12mo"])
     seed = get_seed_drug(bundle.generic_name or bundle.drug_name) or {}
@@ -777,6 +844,8 @@ async def build_drug_command_center(drug_name: str) -> DrugCommandCenter | None:
         market=market_payload,
         evidence=evidence_payload,
         approval=approval.model_dump(),
+        orange_book=orange_book.model_dump(),
+        funding=funding.model_dump(),
         influence=influence_panel.model_dump(),
         peer_comparison=peer_comparison,
         live_alerts=live_alerts,
@@ -837,6 +906,8 @@ async def build_dashboard_home() -> DashboardHome:
             SourceHealthItem(key="influence", label="CMS Open Payments", status="demo"),
             SourceHealthItem(key="formulary", label="CMS Formulary", status="demo"),
             SourceHealthItem(key="evidence", label="PubMed", status="live"),
+            SourceHealthItem(key="orange_book", label="Orange Book", status="live" if settings.orange_book_data_url or settings.orange_book_data_path else "demo"),
+            SourceHealthItem(key="nih_reporter", label="NIH RePORTER", status="live"),
         ]
 
     recent = recent_result if not isinstance(recent_result, Exception) else []
@@ -886,3 +957,7 @@ async def build_dashboard_home() -> DashboardHome:
     )
     await cache_set(cache_key, home.model_dump(), ttl=settings.ttl_dashboard_home)
     return home
+
+
+async def build_media_briefing() -> MediaBriefing:
+    return await get_media_briefing()

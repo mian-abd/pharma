@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 // Use legacy entry which has WidthProvider + Responsive (v1-compatible shim in v2)
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { Responsive, WidthProvider } = require('react-grid-layout/legacy') as {
@@ -13,7 +13,7 @@ import 'react-resizable/css/styles.css';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const LAYOUT_KEY = 'pharmasignal-layout-v3';
+const LAYOUT_KEY = 'pharmacortex-layout-v3';
 const COLS = { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
 const ROW_HEIGHT = 180;
 
@@ -39,11 +39,13 @@ export const DEFAULT_LAYOUT_LG: LayoutItem[] = [
   { i: 'signal-river',    x: 4,  y: 2, w: 3, h: 1, minW: 2, minH: 1 },
   { i: 'research',        x: 7,  y: 2, w: 3, h: 1, minW: 2, minH: 1 },
   { i: 'reg-calendar',    x: 10, y: 2, w: 2, h: 1, minW: 2, minH: 1 },
-  { i: 'market-pulse',    x: 0,  y: 3, w: 4, h: 1, minW: 2, minH: 1 },
+  { i: 'market-pulse',    x: 0,  y: 3, w: 3, h: 1, minW: 2, minH: 1 },
+  { i: 'sponsor-pressure',x: 3,  y: 3, w: 3, h: 1, minW: 2, minH: 1 },
+  { i: 'patent-cliff',    x: 6,  y: 3, w: 3, h: 1, minW: 2, minH: 1 },
+  { i: 'funding-radar',   x: 9,  y: 3, w: 3, h: 1, minW: 2, minH: 1 },
 ];
 
 function loadLayouts(): Record<string, LayoutItem[]> | null {
-  if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(LAYOUT_KEY);
     if (raw) return JSON.parse(raw);
@@ -58,7 +60,8 @@ function saveLayouts(layouts: Record<string, LayoutItem[]>) {
 type PanelId =
   | 'fda-alerts' | 'pipeline' | 'market-movers' | 'global-overview'
   | 'faers-chart' | 'clinical-trials' | 'supply-chain' | 'signal-river'
-  | 'research' | 'reg-calendar' | 'market-pulse' | 'video';
+  | 'research' | 'reg-calendar' | 'market-pulse' | 'video'
+  | 'sponsor-pressure' | 'patent-cliff' | 'funding-radar';
 
 export type PanelMap = Record<PanelId, React.ReactNode>;
 
@@ -80,13 +83,20 @@ const PANEL_LAYER_MAP: Record<PanelId, string> = {
   'reg-calendar': 'fda',
   'market-pulse': 'market',
   'video': 'market',
+  'sponsor-pressure': 'market',
+  'patent-cliff': 'market',
+  'funding-radar': 'evidence',
 };
 
 export default function HubGridLayout({ panels, visibleLayers }: Props) {
-  const [layouts, setLayouts] = useState<Record<string, LayoutItem[]>>(() => {
+  const [layouts, setLayouts] = useState<Record<string, LayoutItem[]>>({ lg: DEFAULT_LAYOUT_LG });
+
+  useEffect(() => {
     const saved = loadLayouts();
-    return saved ?? { lg: DEFAULT_LAYOUT_LG };
-  });
+    if (saved) {
+      setLayouts(saved);
+    }
+  }, []);
 
   const handleLayoutChange = useCallback((_layout: LayoutItem[], allLayouts: Record<string, LayoutItem[]>) => {
     setLayouts(allLayouts);

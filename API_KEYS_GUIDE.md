@@ -1,6 +1,6 @@
-# PharmaSignal — API Keys & Paid Data Sources Guide
+# PharmaCortex — API Keys & Paid Data Sources Guide
 
-This document lists external API keys that will unlock additional real-time data in PharmaSignal. All features degrade gracefully — the dashboard still works without them, using free public APIs and seed data.
+This document lists external API keys that unlock additional real-time data in PharmaCortex. All features degrade gracefully — the dashboard still works without them, using free public APIs and seed data.
 
 ---
 
@@ -17,9 +17,11 @@ These work out of the box with no key required:
 | ClinicalTrials.gov v2 | Active/completed trial counts | `clinicaltrials.gov/api/v2/studies` |
 | RxNorm / RxNav | Drug resolution, autocomplete, synonyms | `rxnav.nlm.nih.gov` |
 | PubMed E-utilities (NCBI) | Publication counts, recent papers | `eutils.ncbi.nlm.nih.gov` |
+| NIH RePORTER API v2 | Federally funded project counts, recent grants | `api.reporter.nih.gov` |
 | DailyMed | Drug label version history | `dailymed.nlm.nih.gov` |
 | FDA RSS Feeds | Live drug news, approvals, safety alerts | FDA website RSS |
 | CMS Part D CSV | Market spend, market movers | `data.cms.gov` (free download) |
+| FDA Orange Book Data Files | Patents, exclusivity, therapeutic equivalence, generic competition | FDA download ZIP |
 
 **Optional:** Add your NCBI/PubMed API key for higher rate limits:
 ```env
@@ -124,6 +126,21 @@ The key is already configured in `services/shared/config.py` as `openfda_api_key
 
 ---
 
+### 6. YouTube Data API v3
+**What it unlocks:** More reliable live-stream resolution for the video panel by detecting active live broadcasts per channel before embedding.  
+**Fallback without key:** PharmaCortex will still resolve latest uploads and open channel/live pages directly.  
+**Sign up:** https://developers.google.com/youtube/v3  
+**Pricing:** Free quota with Google Cloud project.
+
+**Configuration:**
+```env
+YOUTUBE_API_KEY=your_key_here
+```
+
+The app already supports the key via `services/media/youtube_client.py`.
+
+---
+
 ## CMS Data Files (Free Downloads)
 
 ### CMS Part D Spending by Drug
@@ -147,6 +164,18 @@ CMS_PARTD_GEOGRAPHY_CSV_PATH=/path/to/MUP_DPR_RY25_P04_V10_DY23_Geo.csv
 CMS_OPEN_PAYMENTS_CSV_URL=https://openpaymentsdata.cms.gov/...
 # OR:
 CMS_OPEN_PAYMENTS_CSV_PATH=/path/to/open_payments.csv
+```
+
+### FDA Orange Book Data Files
+```env
+ORANGE_BOOK_DATA_URL=https://www.fda.gov/media/76860/download?attachment=
+# OR:
+ORANGE_BOOK_DATA_PATH=/path/to/orange_book.zip
+```
+
+### NIH RePORTER
+```env
+NIH_REPORTER_BASE_URL=https://api.reporter.nih.gov
 ```
 
 ---
@@ -180,6 +209,9 @@ REDIS_URL=redis://localhost:6379/0
 # Optional: higher rate limits
 OPENFDA_API_KEY=
 
+# Optional: more reliable YouTube live resolution
+YOUTUBE_API_KEY=
+
 # Optional: AI rep brief generation
 ANTHROPIC_API_KEY=
 
@@ -195,6 +227,7 @@ NEWSAPI_KEY=
 CMS_PARTD_SPENDING_CSV_PATH=
 CMS_PARTD_GEOGRAPHY_CSV_PATH=
 CMS_OPEN_PAYMENTS_CSV_PATH=
+ORANGE_BOOK_DATA_PATH=
 
 # Optional: PubMed rate limit (free, just needs email)
 PUBMED_EMAIL=your@email.com

@@ -93,6 +93,28 @@ def test_dashboard_drug_success():
             "route": None,
             "source_status": "demo",
         },
+        "orange_book": {
+            "application_number": None,
+            "applicant": None,
+            "approval_date": None,
+            "dosage_form_route": None,
+            "reference_listed_drug": False,
+            "reference_standard": False,
+            "generic_equivalent_count": 0,
+            "therapeutic_equivalence_codes": [],
+            "patents": [],
+            "exclusivities": [],
+            "source_status": "demo",
+        },
+        "funding": {
+            "matched_project_count": 0,
+            "active_project_count": 0,
+            "total_award_amount_usd": 0.0,
+            "top_agencies": [],
+            "top_organizations": [],
+            "recent_projects": [],
+            "source_status": "demo",
+        },
         "influence": {
             "rxcui": "2601723",
             "drug_name": "Ozempic",
@@ -116,3 +138,27 @@ def test_dashboard_drug_success():
         response = client.get("/api/dashboard/drug/Ozempic")
         assert response.status_code == 200
         assert response.json()["generic_name"] == "semaglutide"
+
+
+def test_media_briefing_success():
+    payload = {
+        "generated_at": "2026-04-05T00:00:00Z",
+        "sources": [
+            {
+                "id": "bloomberg",
+                "label": "BLOOMBERG",
+                "category": "markets",
+                "status": "live",
+                "embed_url": "https://example.com/embed/abc",
+                "external_url": "https://example.com/watch/abc",
+                "note": "demo",
+                "thumbnail_url": None,
+                "video_id": "abcdefghijk",
+            }
+        ],
+    }
+    with patch("services.gateway.routers.media.build_media_briefing", new_callable=AsyncMock) as mock_media:
+        mock_media.return_value = payload
+        response = client.get("/api/media/live-briefing")
+        assert response.status_code == 200
+        assert response.json()["sources"][0]["status"] == "live"

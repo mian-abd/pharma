@@ -73,7 +73,7 @@ async def _fetch_rss(url: str, timeout: float = 8.0) -> Optional[bytes]:
     """Fetch raw RSS XML bytes."""
     try:
         async with get_client(timeout=timeout) as client:
-            r = await client.get(url, headers={"User-Agent": "PharmaSignal/1.0 FDA RSS Reader"})
+            r = await client.get(url, headers={"User-Agent": "PharmaCortex/1.0 FDA RSS Reader"})
             if r.status_code == 200:
                 return r.content
     except Exception as exc:

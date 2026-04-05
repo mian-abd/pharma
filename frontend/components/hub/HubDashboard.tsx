@@ -9,6 +9,7 @@ import HubDashboardHeader from './HubDashboardHeader';
 import HubLayersRail from './HubLayersRail';
 import HubGridLayout from './HubGridLayout';
 import type { PanelMap } from './HubGridLayout';
+import HubGridFallback from './HubGridFallback';
 import HubFDAAlertsFeed from './HubFDAAlertsFeed';
 import HubDrugPipeline from './HubDrugPipeline';
 import HubMarketMovers from './HubMarketMovers';
@@ -21,6 +22,9 @@ import HubResearchFeed from './HubResearchFeed';
 import HubRegulatoryCalendar from './HubRegulatoryCalendar';
 import HubMarketPulse from './HubMarketPulse';
 import HubVideoPlayer from './HubVideoPlayer';
+import HubPatentCliff from './HubPatentCliff';
+import HubFundingRadar from './HubFundingRadar';
+import HubSponsorPressure from './HubSponsorPressure';
 
 function threatFromData(drug: { trust_score?: number } | null, maxTrend: number) {
   if (drug && typeof drug.trust_score === 'number') {
@@ -40,8 +44,13 @@ function HubDashboardInner() {
   const searchParams = useSearchParams();
   const qDrug = searchParams.get('drug') || '';
 
+  const [isHydrated, setIsHydrated] = useState(false);
   const [selectedDrug, setSelectedDrug] = useState(qDrug);
   const [layers, setLayers] = useState<Record<HubLayerId, boolean>>({ ...DEFAULT_LAYERS });
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     setSelectedDrug(qDrug || '');
@@ -64,7 +73,7 @@ function HubDashboardInner() {
   }, [router]);
 
   const trending = home?.trending_drugs ?? [];
-  const maxTrend = trending.length ? Math.max(...trending.map(t => t.trend_score)) : 0;
+  const maxTrend = trending.length ? Math.max(...trending.map((trend) => trend.trend_score)) : 0;
   const threat = threatFromData(drug ?? null, maxTrend);
 
   const alerts = useMemo(() => {
@@ -77,14 +86,12 @@ function HubDashboardInner() {
   const pipelineMode = drug && peerRows.length > 0 ? 'drug' : 'home';
 
   const toggleLayer = (id: HubLayerId) => {
-    setLayers(prev => ({ ...prev, [id]: !prev[id] }));
+    setLayers((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const panels: PanelMap = useMemo(() => ({
-    'fda-alerts': (
-      <HubFDAAlertsFeed alerts={alerts} loading={homeLoading && !home} />
-    ),
-    'pipeline': (
+    'fda-alerts': <HubFDAAlertsFeed alerts={alerts} loading={homeLoading && !home} />,
+    pipeline: (
       <HubDrugPipeline
         mode={pipelineMode}
         trending={trending}
@@ -118,25 +125,15 @@ function HubDashboardInner() {
     'clinical-trials': (
       <HubClinicalTrials trials={drug?.trials ?? []} loading={!!selectedDrug && drugLoading && !drug} />
     ),
-    'supply-chain': (
-      <HubSupplyChain trending={trending} />
-    ),
-    'signal-river': (
-      <HubMedicalNewsFeed alerts={alerts} />
-    ),
-    'research': (
+    'supply-chain': <HubSupplyChain trending={trending} />,
+    'signal-river': <HubMedicalNewsFeed alerts={alerts} />,
+    research: (
       <HubResearchFeed
         publications={drug?.evidence?.recent_publications ?? []}
-        placeholder={
-          selectedDrug
-            ? 'No PubMed hits returned for this molecule yet.'
-            : undefined
-        }
+        placeholder={selectedDrug ? 'No PubMed hits returned for this molecule yet.' : undefined}
       />
     ),
-    'reg-calendar': (
-      <HubRegulatoryCalendar />
-    ),
+    'reg-calendar': <HubRegulatoryCalendar />,
     'market-pulse': (
       <HubMarketPulse
         featured={home?.featured_watchlist ?? []}
@@ -144,9 +141,25 @@ function HubDashboardInner() {
         onSelectDrug={setDrug}
       />
     ),
-    'video': (
-      <HubVideoPlayer />
+    'sponsor-pressure': (
+      <HubSponsorPressure
+        approval={drug?.approval}
+        influence={drug?.influence}
+      />
     ),
+    'patent-cliff': (
+      <HubPatentCliff
+        approval={drug?.approval}
+        orangeBook={drug?.orange_book}
+      />
+    ),
+    'funding-radar': (
+      <HubFundingRadar
+        funding={drug?.funding}
+        selectedDrug={selectedDrug || null}
+      />
+    ),
+    video: <HubVideoPlayer />,
   }), [
     alerts, home, drug, trending, peerRows, pipelineMode,
     selectedDrug, homeLoading, drugLoading, sourceHealth, setDrug,
@@ -166,7 +179,7 @@ function HubDashboardInner() {
 
       {homeError && (
         <div className="shrink-0 bg-critical/15 border-b border-critical text-critical text-[10px] font-mono px-3 py-1">
-          Gateway unreachable — start the API (`GATEWAY_URL`) or check `/api/dashboard/home`. Showing empty tiles until connected.
+          Gateway unreachable - start the API (`GATEWAY_URL`) or check `/api/dashboard/home`. Showing empty tiles until connected.
         </div>
       )}
       {selectedDrug && drugError && (
@@ -177,7 +190,11 @@ function HubDashboardInner() {
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
         <HubLayersRail layers={layers} onToggle={toggleLayer} />
-        <HubGridLayout panels={panels} visibleLayers={layers} />
+        {isHydrated ? (
+          <HubGridLayout panels={panels} visibleLayers={layers} />
+        ) : (
+          <HubGridFallback visibleLayers={layers} />
+        )}
       </div>
 
       {selectedDrug && drug && (
@@ -197,7 +214,7 @@ export default function HubDashboard() {
     <Suspense
       fallback={
         <div className="h-screen bg-background text-primary flex items-center justify-center font-mono text-sm">
-          Initializing PharmaSignal board…
+          Initializing PharmaCortex board...
         </div>
       }
     >

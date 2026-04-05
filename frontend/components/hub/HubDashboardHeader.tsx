@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity, Bell, Search, Settings, X } from 'lucide-react';
 import { useAutocomplete } from '@/lib/api';
 
@@ -23,7 +23,7 @@ export default function HubDashboardHeader({
   threatLabel,
   threatLevel,
 }: Props) {
-  const [timeStr, setTimeStr] = useState('');
+  const [timeStr, setTimeStr] = useState('SYNCING UTC');
   const [input, setInput] = useState(selectedDrug || '');
   const [debounced, setDebounced] = useState('');
   const [open, setOpen] = useState(false);
@@ -34,8 +34,8 @@ export default function HubDashboardHeader({
   }, [selectedDrug]);
 
   useEffect(() => {
-    const t = setTimeout(() => setDebounced(input), 280);
-    return () => clearTimeout(t);
+    const timeoutId = setTimeout(() => setDebounced(input), 280);
+    return () => clearTimeout(timeoutId);
   }, [input]);
 
   useEffect(() => {
@@ -54,9 +54,10 @@ export default function HubDashboardHeader({
         }) + ' UTC'
       );
     }
+
     tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
+    const intervalId = setInterval(tick, 1000);
+    return () => clearInterval(intervalId);
   }, []);
 
   const { suggestions } = useAutocomplete(debounced);
@@ -66,24 +67,28 @@ export default function HubDashboardHeader({
   }, [suggestions, debounced]);
 
   useEffect(() => {
-    function onDoc(e: MouseEvent) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    function onDocumentMouseDown(event: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
     }
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
+
+    document.addEventListener('mousedown', onDocumentMouseDown);
+    return () => document.removeEventListener('mousedown', onDocumentMouseDown);
   }, []);
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      const t = e.target as HTMLElement | null;
-      if (t && ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
-      if (e.key === '/') {
-        e.preventDefault();
+    function onWindowKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+      if (event.key === '/') {
+        event.preventDefault();
         document.getElementById('hub-drug-search')?.focus();
       }
     }
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+
+    window.addEventListener('keydown', onWindowKeyDown);
+    return () => window.removeEventListener('keydown', onWindowKeyDown);
   }, []);
 
   const onPick = useCallback(
@@ -104,93 +109,90 @@ export default function HubDashboardHeader({
           ? 'border-primary/30 text-primary bg-primary/8'
           : 'border-border text-muted-foreground bg-secondary';
 
-  const scrollText = tickerItems.length ? tickerItems.join('   //   ') : 'PharmaSignal command center';
+  const scrollText = tickerItems.length ? tickerItems.join('   //   ') : 'PharmaCortex command center';
 
   return (
     <header className="flex flex-col border-b border-border bg-card shrink-0">
-      <div className="flex items-center justify-between px-3 py-2 gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="flex items-center gap-2 shrink-0">
-            <Activity className="w-5 h-5 text-primary" />
-            <span className="font-semibold text-sm tracking-wide text-foreground whitespace-nowrap">
-              PHARMA<span className="text-primary">SIGNAL</span>
+      <div className="flex items-center justify-between gap-3 px-3 py-2">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2">
+            <Activity className="h-5 w-5 text-primary" />
+            <span className="whitespace-nowrap text-sm font-semibold tracking-wide text-foreground">
+              PHARMA<span className="text-primary">CORTEX</span>
             </span>
-            <span className="text-[10px] text-muted-foreground font-mono hidden sm:inline">v2</span>
+            <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">v2</span>
           </div>
-          <div className="h-4 w-px bg-border shrink-0" />
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="h-4 w-px shrink-0 bg-border" />
+          <div className="flex shrink-0 items-center gap-1.5">
             <div className="hub-live-dot" />
-            <span className="text-[10px] font-mono text-muted-foreground">LIVE</span>
+            <span className="font-mono text-[10px] text-muted-foreground">LIVE</span>
           </div>
-          <span className="text-[10px] font-mono text-muted-foreground uppercase truncate hidden md:inline">
+          <span className="hidden truncate font-mono text-[10px] uppercase text-muted-foreground md:inline">
             {timeStr}
           </span>
         </div>
 
-        <div
-          ref={wrapRef}
-          className="flex-1 max-w-xl min-w-[120px] relative"
-        >
-          <div className="flex items-center gap-1.5 bg-secondary rounded-lg px-2.5 py-1.5 border border-border transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
-            <Search className="w-3 h-3 text-muted-foreground shrink-0" />
+        <div ref={wrapRef} className="relative flex-1 min-w-[120px] max-w-xl">
+          <div className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-2.5 py-1.5 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
+            <Search className="h-3 w-3 shrink-0 text-muted-foreground" />
             <input
               id="hub-drug-search"
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={(event) => setInput(event.target.value)}
               onFocus={() => suggestions.length > 0 && setOpen(true)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && input.trim()) onPick(input.trim());
-                if (e.key === 'Escape') setOpen(false);
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && input.trim()) onPick(input.trim());
+                if (event.key === 'Escape') setOpen(false);
               }}
-              placeholder="Drug, ingredient, or company — Enter (press /)"
-              className="flex-1 bg-transparent text-[11px] text-foreground outline-none min-w-0 font-mono"
+              placeholder="Drug, ingredient, or company - Enter (press /)"
+              className="min-w-0 flex-1 bg-transparent font-mono text-[11px] text-foreground outline-none"
               aria-label="Drug and company search"
             />
             {selectedDrug && (
-              <button type="button" onClick={onClearDrug} className="p-0.5 hover:bg-muted rounded" aria-label="Clear drug">
-                <X className="w-3 h-3 text-muted-foreground" />
+              <button type="button" onClick={onClearDrug} className="rounded p-0.5 hover:bg-muted" aria-label="Clear drug">
+                <X className="h-3 w-3 text-muted-foreground" />
               </button>
             )}
           </div>
           {open && (
-            <div className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto hub-scrollbar bg-card border border-border rounded-lg shadow-lg">
-              {suggestions.slice(0, 12).map(s => (
+            <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-48 overflow-y-auto rounded-lg border border-border bg-card shadow-lg hub-scrollbar">
+              {suggestions.slice(0, 12).map((suggestion) => (
                 <button
-                  key={s}
+                  key={suggestion}
                   type="button"
-                  className="w-full text-left px-3 py-2 text-[11px] font-mono hover:bg-secondary text-foreground border-b border-border/30 last:border-0 transition-colors"
-                  onClick={() => onPick(s)}
+                  className="w-full border-b border-border/30 px-3 py-2 text-left font-mono text-[11px] text-foreground transition-colors last:border-0 hover:bg-secondary"
+                  onClick={() => onPick(suggestion)}
                 >
-                  {s}
+                  {suggestion}
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <div className={`hidden sm:flex items-center px-2.5 py-1 rounded-md border text-[10px] font-mono font-bold ${threatBox}`}>
+        <div className="flex shrink-0 items-center gap-2">
+          <div className={`hidden items-center rounded-md border px-2.5 py-1 font-mono text-[10px] font-bold sm:flex ${threatBox}`}>
             {threatLabel}
           </div>
           <div className="hub-tag-info whitespace-nowrap">FDA WATCH</div>
           <div className="hub-tag-warning whitespace-nowrap">{alertCount} ALERTS</div>
-          <div className="h-4 w-px bg-border hidden sm:block" />
-          <button type="button" className="p-1.5 hover:bg-secondary rounded-md hidden sm:block transition-colors">
-            <Bell className="w-3.5 h-3.5 text-muted-foreground" />
+          <div className="hidden h-4 w-px bg-border sm:block" />
+          <button type="button" className="hidden rounded-md p-1.5 transition-colors hover:bg-secondary sm:block">
+            <Bell className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
-          <button type="button" className="p-1.5 hover:bg-secondary rounded-md hidden sm:block transition-colors">
-            <Settings className="w-3.5 h-3.5 text-muted-foreground" />
+          <button type="button" className="hidden rounded-md p-1.5 transition-colors hover:bg-secondary sm:block">
+            <Settings className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
         </div>
       </div>
 
-      <div className="border-t border-border bg-background/80 overflow-hidden">
+      <div className="overflow-hidden border-t border-border bg-background/80">
         <div className="flex items-stretch">
-          <div className="bg-primary text-primary-foreground text-[9px] font-bold px-3 flex items-center tracking-wider shrink-0 rounded-r-md">
+          <div className="flex shrink-0 items-center rounded-r-md bg-primary px-3 text-[9px] font-bold tracking-wider text-primary-foreground">
             TICKER
           </div>
-          <div className="flex-1 overflow-hidden py-1 min-w-0">
-            <div className="hub-marquee-track text-[10px] font-mono text-muted-foreground px-2">
+          <div className="min-w-0 flex-1 overflow-hidden py-1">
+            <div className="hub-marquee-track px-2 font-mono text-[10px] text-muted-foreground">
               <span className="whitespace-nowrap pr-16">{scrollText}</span>
               <span className="whitespace-nowrap pr-16">{scrollText}</span>
             </div>

@@ -1,0 +1,6 @@
+# Railway deployment — PharmaCortex API gateway (FastAPI)
+# Root directory for this service: repository root (not frontend/)
+# Set env vars in Railway: MONGODB_URL, REDIS_URL, ALLOWED_ORIGINS, ANTHROPIC_API_KEY, etc.
+
+[deploy]
+startCommand = "uvicorn services.gateway.main:app --host 0.0.0.0 --port $PORT"
