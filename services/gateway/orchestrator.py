@@ -17,7 +17,7 @@ from services.drug_resolution.rxnorm_client import DrugResolutionResult, resolve
 from services.fda_signals.fda_client import FDASignalItem, get_fda_signals
 from services.formulary.cms_parser import FormularyCoverage, get_formulary_coverage
 from services.gateway.trust_score import compute_trust_score
-from services.shared.cache import cache_get, cache_set
+from services.shared.cache import cache_get, cache_set, cache_track_drug
 from services.shared.config import settings
 from services.shared.models import TrustScoreBreakdown
 
@@ -165,6 +165,10 @@ async def build_drug_bundle(drug_name: str) -> Optional[DrugBundle]:
 
     # Step 7: Cache the full bundle
     await cache_set(bundle_cache_key, bundle.model_dump(), ttl=settings.ttl_bundle)
+
+    # Step 8: Track this drug for background refresh jobs
+    await cache_track_drug(rxcui, resolution.generic_name or drug_name, resolution.brand_name)
+
     return bundle
 
 

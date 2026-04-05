@@ -56,8 +56,13 @@ PharmaCortex arms physicians with the NNT, real-world vs. trial performance gaps
 | **RxNorm** (NLM) | `rxnav.nlm.nih.gov/REST/` | RXCUI resolution, brand/generic names, drug class | On search (TTL 30d) |
 | **openFDA FAERS** | `api.fda.gov/drug/event.json` | 6-month adverse event trend, top reactions, PRR signal | Daily 02:00 UTC |
 | **ClinicalTrials.gov v2** | `clinicaltrials.gov/api/v2/studies` | Trial list, phase, status, enrollment, sponsor type | Daily 03:00 UTC |
-| **CMS Part D** | CMS formulary CSV files | Tier, copay estimates, PA/step therapy by payer | 1st of each month |
+| **CMS Part D / Geography** | CMS Part D geography CSV | Beneficiaries, claims, spend, state rollups, peer market context | On CSV refresh |
+| **CMS Formulary** | CMS formulary ZIP / CSV | Tier, copay estimates, PA/step therapy by payer | On file refresh |
+| **CMS Open Payments** | CMS Open Payments CSV | Specialty/company payment pressure and yearly trend | On CSV refresh |
 | **openFDA Enforcement** | `api.fda.gov/drug/enforcement.json` | Recalls, label updates, black box warnings | Hourly |
+| **openFDA Drug Shortages** | `api.fda.gov/drug/shortage.json` | Active shortage flags and reason text | Hourly |
+| **openFDA Drugs@FDA** | `api.fda.gov/drug/drugsfda.json` | Approval metadata, sponsor, dosage form, route | Daily |
+| **PubMed E-utilities** | `eutils.ncbi.nlm.nih.gov/entrez/eutils` | Literature volume, recent PMIDs, evidence velocity | Daily |
 | **Claude API** (Anthropic) | `claude-sonnet-4-5` | Rep Brief: will_say, reality, power_questions, limitations | TTL 7 days |
 
 ---
@@ -136,7 +141,9 @@ Score interpretation:
 git clone <repo>
 cd pharmacortex
 cp .env.example .env
-# Edit .env -- set ANTHROPIC_API_KEY at minimum
+# Edit .env -- set ANTHROPIC_API_KEY at minimum.
+# Optional: point CMS_* and PUBMED_* variables at local bulk files / URLs
+# to replace seeded demo fallbacks with live ingest-backed panels.
 ```
 
 ### 2. Start infrastructure
@@ -188,6 +195,8 @@ Interactive Swagger UI: `http://localhost:8000/docs`
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/api/drug/{name}` | Full drug intelligence bundle |
+| `GET` | `/api/dashboard/home` | Command center landing payload with trending/watchlist/global alerts |
+| `GET` | `/api/dashboard/drug/{name}` | First-paint command center snapshot for a searched drug |
 | `GET` | `/api/search/autocomplete?prefix=` | Drug name suggestions |
 | `GET` | `/api/health` | External API status check |
 

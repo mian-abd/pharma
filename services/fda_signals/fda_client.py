@@ -62,7 +62,7 @@ async def _fetch_enforcement(rxcui: str, drug_name: str) -> List[FDASignalItem]:
         "limit": "10",
         "sort": "report_date:desc",
     }
-    data = await fetch_with_retry(url, params=params)
+    data = await fetch_with_retry(url, params=params, max_retries=1, base_delay=0.2, timeout_seconds=3.0)
     if not data:
         return []
 
@@ -91,7 +91,7 @@ async def _fetch_label_signals(rxcui: str, drug_name: str) -> List[FDASignalItem
         "search": f"openfda.rxcui:{rxcui}",
         "limit": "5",
     }
-    data = await fetch_with_retry(url, params=params)
+    data = await fetch_with_retry(url, params=params, max_retries=1, base_delay=0.2, timeout_seconds=3.0)
     if not data:
         return []
 

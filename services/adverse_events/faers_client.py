@@ -1,4 +1,5 @@
 """openFDA FAERS adverse events client -- 6-month trend, top reactions, signal detection."""
+import asyncio
 import logging
 from calendar import monthrange
 from datetime import date, datetime, timezone
@@ -47,6 +48,7 @@ async def get_6mo_trend(rxcui: str, drug_name: str) -> FAERSSummary:
     serious_reports = 0
 
     today = date.today()
+    month_ranges = []
     for i in range(6, 0, -1):
         # Go back i months from today
         month = today.month - i
@@ -58,8 +60,15 @@ async def get_6mo_trend(rxcui: str, drug_name: str) -> FAERSSummary:
         start = date(year, month, 1)
         last_day = monthrange(year, month)[1]
         end = date(year, month, last_day)
+        month_ranges.append((year, month, start, end))
 
-        month_data = await _fetch_monthly_counts(drug_name, start, end)
+    month_results = await asyncio.gather(
+        *[_fetch_monthly_counts(drug_name, start, end) for _, _, start, end in month_ranges],
+        return_exceptions=True,
+    )
+
+    for (year, month, _, _), month_result in zip(month_ranges, month_results):
+        month_data = month_result if not isinstance(month_result, Exception) else {"total": 0, "serious": 0, "fatal": 0}
         monthly_data.append({
             "year": year,
             "month": month,
@@ -108,7 +117,7 @@ async def _fetch_monthly_counts(drug_name: str, start: date, end: date) -> Dict[
     search = f"patient.drug.medicinalproduct:{drug_name}+AND+{date_range}"
 
     url = f"{OPENFDA_BASE}/drug/event.json"
-    data = await fetch_with_retry(url, params={"search": search, "count": "serious", "limit": "2"})
+    data = await fetch_with_retry(url, params={"search": search, "count": "serious", "limit": "2"}, max_retries=1, base_delay=0.2, timeout_seconds=3.0)
 
     total = 0
     serious = 0
@@ -127,7 +136,7 @@ async def _fetch_monthly_counts(drug_name: str, start: date, end: date) -> Dict[
 
         # Fetch fatal separately
         fatal_search = f"{search}+AND+patient.reaction.reactionoutcome:5"
-        fatal_data = await fetch_with_retry(url, params={"search": fatal_search, "limit": "1"})
+        fatal_data = await fetch_with_retry(url, params={"search": fatal_search, "limit": "1"}, max_retries=1, base_delay=0.2, timeout_seconds=3.0)
         if fatal_data:
             fatal = fatal_data.get("meta", {}).get("results", {}).get("total", 0)
 
@@ -142,7 +151,7 @@ async def _fetch_top_reactions(drug_name: str, limit: int = 10) -> List[dict]:
         "count": "patient.reaction.reactionmeddrapt.exact",
         "limit": str(limit),
     }
-    data = await fetch_with_retry(url, params=params)
+    data = await fetch_with_retry(url, params=params, max_retries=1, base_delay=0.2, timeout_seconds=3.0)
     if not data:
         return []
 

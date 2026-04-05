@@ -1,196 +1,538 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-/* Bloomberg Terminal Design System */
+/* Health-insights-hub + command-center tokens (Tailwind v4) */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-background: hsl(220 20% 7%);
+  --color-foreground: hsl(210 20% 88%);
+  --color-card: hsl(220 18% 10%);
+  --color-card-foreground: hsl(210 20% 88%);
+  --color-primary: hsl(174 60% 45%);
+  --color-primary-foreground: hsl(220 20% 7%);
+  --color-secondary: hsl(220 16% 14%);
+  --color-secondary-foreground: hsl(210 20% 75%);
+  --color-muted: hsl(220 14% 12%);
+  --color-muted-foreground: hsl(215 12% 50%);
+  --color-border: hsl(220 14% 16%);
+  --color-destructive: hsl(0 65% 52%);
+  --color-success: hsl(145 55% 42%);
+  --color-warning: hsl(38 80% 55%);
+  --color-critical: hsl(0 70% 55%);
+  --color-elevated: hsl(25 80% 55%);
+  --color-stable: hsl(145 55% 42%);
+}
+
+/* ============================================================
+   PharmaSignal Command-Center Design System
+   Inspired by threat terminals and market workstations.
+   Near-black base, green systems layer, red risk layer.
+   ============================================================ */
+
 :root {
-  --bg-primary: #060d1a;
-  --bg-panel: #070f20;
-  --bg-panel-hover: #091428;
-  --bg-input: #060d1a;
+  /* ── Backgrounds ────────────────────────────── */
+  --bg-void:       #030506;
+  --bg-base:       #070a0c;
+  --bg-panel:      #0d1114;
+  --bg-card:       #12181d;
+  --bg-input:      #091013;
+  --bg-hover:      #151d22;
 
-  --border-primary: #0d2040;
-  --border-accent: #1a3c6b;
+  /* ── Borders ──────────────────────────────────*/
+  --border-dim:    #11171b;
+  --border-mid:    #1a252b;
+  --border-lit:    #223239;
+  --border-red:    #7f1d1d;
 
-  --accent-green: #00ff88;
-  --accent-green-dim: #00cc6a;
-  --accent-amber: #ffb800;
-  --accent-red: #ff4444;
-  --accent-blue: #4499ff;
-  --accent-purple: #9966ff;
+  /* ── Red — PRIMARY accent (dominant) ───────── */
+  --red:           #dc2626;   /* primary red */
+  --red-bright:    #ef4444;   /* bright red for highlights */
+  --red-dim:       #991b1b;   /* muted/dark red */
+  --red-ultra:     #ff2020;   /* max urgency */
+  --red-glow:      rgba(220,38,38,0.18);
+  --red-glow-sm:   rgba(220,38,38,0.10);
 
-  --text-primary: #c8d4e8;
-  --text-secondary: #7a9bc8;
-  --text-muted: #3a5a8a;
-  --text-green: #00ff88;
-  --text-amber: #ffb800;
-  --text-red: #ff4444;
+  /* ── Amber — secondary warning ─────────────── */
+  --amber:         #f59e0b;
+  --amber-dim:     #b45309;
+  --amber-glow:    rgba(245,158,11,0.12);
 
-  --navy-accent: #1a3c6b;
-  --navy-deep: #0a1f3d;
+  /* ── Green — safe/clear only ───────────────── */
+  --green:         #16a34a;
+  --green-bright:  #22c55e;
+  --green-glow:    rgba(34,197,94,0.12);
 
-  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  /* ── Blue — neutral info ───────────────────── */
+  --blue:          #2563eb;
+  --blue-bright:   #38bdf8;
+  --blue-glow:     rgba(56,189,248,0.12);
+
+  /* ── Purple — ML / AI ──────────────────────── */
+  --purple:        #7c3aed;
+  --purple-bright: #8b5cf6;
+
+  /* ── Text hierarchy ─────────────────────────── */
+  --text-hi:       #eef5fb;
+  --text-mid:      #9badbf;
+  --text-lo:       #5b6a78;
+  --text-dim:      #20303a;
+  --text-red:      #ef4444;
+  --text-amber:    #f59e0b;
+  --text-green:    #22c55e;
+
+  /* ── Fonts ──────────────────────────────────── */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+  /* ── Transitions ────────────────────────────── */
+  --t-fast: 0.10s ease;
+  --t-mid:  0.22s ease;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
-html {
-  font-size: 13px;
-}
+html { font-size: 12px; color-scheme: dark; }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.06), transparent 22%),
+    radial-gradient(circle at top right, rgba(14,165,233,0.05), transparent 20%),
+    var(--bg-base);
+  color: var(--text-hi);
   font-family: var(--font-mono);
-  margin: 0;
-  padding: 0;
-  line-height: 1.5;
+  margin: 0; padding: 0;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
-/* Scrollbar styling -- Bloomberg terminal aesthetic */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
+/* ── Scrollbars ────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--border-red); border-radius: 1px; }
+::-webkit-scrollbar-thumb:hover { background: var(--red-dim); }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-panel);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-accent);
-  border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--navy-accent);
-}
-
-/* Panel base styles */
+/* ============================================================
+   Panel system
+   ============================================================ */
 .panel {
   background: var(--bg-panel);
-  border: 1px solid var(--border-primary);
-  padding: 0.75rem;
+  border: 1px solid var(--border-mid);
+}
+
+.panel-signal {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-red);
+  box-shadow: 0 0 0 1px var(--red-glow-sm) inset;
 }
 
 .panel-header {
-  font-size: 0.7rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-primary);
-  margin-bottom: 0.75rem;
+  color: var(--text-lo);
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-mid);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Status badges */
+.panel-header-red {
+  color: var(--red);
+  border-bottom-color: var(--border-red);
+}
+
+/* ============================================================
+   Badges — red is default
+   ============================================================ */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.1rem 0.4rem;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  padding: 0.08rem 0.4rem;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   border: 1px solid;
-  border-radius: 2px;
+  line-height: 1.5;
+  gap: 3px;
 }
 
-.badge-green {
-  color: var(--accent-green);
-  border-color: var(--accent-green);
-  background: rgba(0, 255, 136, 0.08);
+.badge-red    { color: var(--red-bright); border-color: var(--red); background: var(--red-glow-sm); }
+.badge-amber  { color: var(--amber);      border-color: var(--amber-dim); background: var(--amber-glow); }
+.badge-green  { color: var(--green-bright); border-color: var(--green); background: var(--green-glow); }
+.badge-blue   { color: var(--blue-bright); border-color: var(--blue); background: var(--blue-glow); }
+.badge-purple { color: var(--purple-bright); border-color: var(--purple); background: rgba(124,58,237,0.10); }
+.badge-muted  { color: var(--text-lo); border-color: var(--border-lit); background: transparent; }
+
+/* ============================================================
+   Live/pulse indicators
+   ============================================================ */
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--red-glow); }
+  50%       { opacity: 0.7; box-shadow: 0 0 0 4px transparent; }
+}
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes glow-pulse-red {
+  0%, 100% { box-shadow: 0 0 6px var(--red-glow); }
+  50%       { box-shadow: 0 0 14px var(--red-glow), 0 0 2px var(--red); }
 }
 
-.badge-amber {
-  color: var(--accent-amber);
-  border-color: var(--accent-amber);
-  background: rgba(255, 184, 0, 0.08);
+.dot-red {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--red);
+  animation: pulse-red 1.5s infinite;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-.badge-red {
-  color: var(--accent-red);
-  border-color: var(--accent-red);
-  background: rgba(255, 68, 68, 0.08);
+.dot-amber {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--amber);
+  animation: pulse-amber 2s infinite;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-.badge-blue {
-  color: var(--accent-blue);
-  border-color: var(--accent-blue);
-  background: rgba(68, 153, 255, 0.08);
+.dot-green {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green-bright);
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-.badge-muted {
-  color: var(--text-muted);
-  border-color: var(--border-primary);
-  background: transparent;
+.dot-muted {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--text-lo);
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-/* Metric display */
-.metric-value {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--accent-green);
-  line-height: 1;
+/* ============================================================
+   Skeleton
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(90deg, var(--border-dim) 25%, var(--bg-card) 50%, var(--border-dim) 75%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 1px;
 }
 
-.metric-label {
+/* ============================================================
+   Panel animation
+   ============================================================ */
+.panel-in { animation: panel-in 0.2s ease-out forwards; }
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+.tab-row {
+  display: flex;
+  border-bottom: 1px solid var(--border-mid);
+  background: var(--bg-void);
+  flex-shrink: 0;
+}
+
+.tab {
+  padding: 0.45rem 0.8rem;
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-top: 0.2rem;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-lo);
+  transition: color var(--t-fast);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.tab:hover { color: var(--text-mid); }
+.tab-active {
+  color: var(--red-bright);
+  border-bottom-color: var(--red);
+  text-shadow: 0 0 8px var(--red-glow);
 }
 
-/* Pulsing live indicator */
-@keyframes pulse-green {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+/* ============================================================
+   Metric display
+   ============================================================ */
+.metric-val {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+  font-family: var(--font-mono);
 }
 
-.live-dot {
+.metric-lbl {
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Signal row (alert feed items)
+   ============================================================ */
+.signal-row {
+  display: flex;
+  gap: 6px;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border-dim);
+  transition: background var(--t-fast);
+  cursor: default;
+}
+.signal-row:hover { background: var(--bg-hover); }
+
+/* ============================================================
+   Data table rows
+   ============================================================ */
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.22rem 0;
+  border-bottom: 1px solid var(--border-dim);
+  font-size: 0.68rem;
+}
+.data-row:last-child { border-bottom: none; }
+
+/* ============================================================
+   Bar fill
+   ============================================================ */
+.bar-track {
+  height: 4px;
+  background: var(--border-mid);
+  border-radius: 1px;
+  overflow: hidden;
+  flex: 1;
+}
+.bar-red    { height: 100%; background: var(--red);   border-radius: 1px; transition: width 0.5s ease; }
+.bar-amber  { height: 100%; background: var(--amber); border-radius: 1px; transition: width 0.5s ease; }
+.bar-green  { height: 100%; background: var(--green); border-radius: 1px; transition: width 0.5s ease; }
+.bar-blue   { height: 100%; background: var(--blue-bright); border-radius: 1px; transition: width 0.5s ease; }
+
+/* ============================================================
+   Keyboard hint
+   ============================================================ */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  min-width: 16px;
+  height: 14px;
+  font-size: 0.55rem;
+  border: 1px solid var(--border-lit);
+  color: var(--text-lo);
+  background: var(--bg-card);
+}
+
+/* ============================================================
+   Top ticker
+   ============================================================ */
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+.ticker-inner {
+  display: inline-block;
+  animation: ticker-scroll 35s linear infinite;
+}
+.ticker-inner:hover { animation-play-state: paused; }
+
+/* ============================================================
+   Red glow panel (high-signal panels)
+   ============================================================ */
+.glow-panel {
+  animation: glow-pulse-red 3s ease-in-out infinite;
+}
+
+/* ============================================================
+   Status dots for source feeds
+   ============================================================ */
+.src-live    { color: var(--green-bright); }
+.src-warn    { color: var(--amber); }
+.src-dead    { color: var(--text-lo); }
+
+/* ============================================================
+   Watchlist item
+   ============================================================ */
+.watchlist-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.28rem 0.5rem;
+  font-size: 0.65rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-dim);
+  transition: background var(--t-fast);
+}
+.watchlist-item:hover { background: var(--bg-hover); }
+.watchlist-item-active {
+  background: var(--bg-card);
+  border-left: 2px solid var(--red);
+}
+
+/* ============================================================
+   Search input
+   ============================================================ */
+.search-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-lit);
+  color: var(--text-hi);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.6rem;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--t-fast);
+}
+.search-input:focus { border-color: var(--red-dim); }
+.search-input::placeholder { color: var(--text-lo); }
+
+/* ============================================================
+   Threat level meter
+   ============================================================ */
+.threat-critical { color: var(--red-ultra); }
+.threat-high     { color: var(--red-bright); }
+.threat-medium   { color: var(--amber); }
+.threat-low      { color: var(--green-bright); }
+.threat-none     { color: var(--text-lo); }
+
+/* ── Hub dashboard (health-insights-hub layout) ───────────────── */
+@layer components {
+  .hub-panel {
+    @apply bg-card border border-border rounded-md overflow-hidden flex flex-col;
+  }
+  .hub-panel-header {
+    @apply flex items-center justify-between px-3 py-2 border-b border-border shrink-0;
+  }
+  .hub-panel-title {
+    @apply text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+  .hub-live-dot {
+    @apply w-1.5 h-1.5 rounded-full bg-success animate-pulse;
+  }
+  .hub-tag {
+    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide;
+  }
+  .hub-tag-critical {
+    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-critical/15 text-critical;
+  }
+  .hub-tag-warning {
+    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-warning/15 text-warning;
+  }
+  .hub-tag-success {
+    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-success/15 text-success;
+  }
+  .hub-tag-info {
+    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-primary/15 text-primary;
+  }
+  .hub-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(220 14% 16%) transparent;
+  }
+}
+
+@keyframes hub-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.hub-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: hub-marquee 48s linear infinite;
+}
+.hub-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   react-grid-layout overrides — dark terminal theme
+   ============================================================ */
+.react-grid-layout {
+  position: relative;
+}
+.react-grid-item {
+  position: absolute;
+  transition: all 200ms ease;
+  transition-property: left, top, width, height;
+}
+.react-grid-item.react-grid-placeholder {
+  background: hsl(174 60% 45% / 0.15);
+  border: 1px dashed hsl(174 60% 45% / 0.5);
+  border-radius: 6px;
+  transition-duration: 100ms;
+  z-index: 2;
+}
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  bottom: 2px;
+  right: 2px;
+  cursor: se-resize;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.react-grid-item:hover > .react-resizable-handle {
+  opacity: 1;
+}
+.react-grid-item > .react-resizable-handle::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
-  background: var(--accent-green);
-  animation: pulse-green 2s infinite;
-  display: inline-block;
+  border-right: 2px solid hsl(174 60% 45% / 0.7);
+  border-bottom: 2px solid hsl(174 60% 45% / 0.7);
 }
-
-/* Panel entrance animation */
-@keyframes panel-enter {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Drag handle hover glow on panel header */
+.hub-drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  z-index: 10;
+  cursor: grab;
+  border-radius: 6px 6px 0 0;
+  opacity: 0;
+  transition: opacity 150ms, background 150ms;
 }
-
-.panel-animate {
-  animation: panel-enter 0.3s ease-out forwards;
+.react-grid-item:hover .hub-drag-handle {
+  opacity: 1;
+  background: hsl(174 60% 45% / 0.06);
 }
-
-/* Tab styles */
-.tab-active {
-  color: var(--accent-green);
-  border-bottom: 2px solid var(--accent-green);
+.hub-drag-handle:active {
+  cursor: grabbing;
+  background: hsl(174 60% 45% / 0.12) !important;
 }
-
-.tab-inactive {
-  color: var(--text-muted);
-  border-bottom: 2px solid transparent;
-}
-
-/* Number styling */
-.num-positive { color: var(--accent-green); }
-.num-negative { color: var(--accent-red); }
-.num-neutral  { color: var(--text-primary); }

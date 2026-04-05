@@ -42,6 +42,31 @@ beat_schedule = {
         "schedule": crontab(hour=4, minute=30),  # daily 04:30 UTC
         "options": {"expires": 3600},
     },
+    "refresh-shortage-status": {
+        "task": "scheduler.tasks.refresh_shortage_status",
+        "schedule": crontab(minute=30),  # every hour at :30
+        "options": {"expires": 1800},
+    },
+    "refresh-label-history": {
+        "task": "scheduler.tasks.refresh_label_history",
+        "schedule": crontab(hour=5, minute=0),  # daily 05:00 UTC
+        "options": {"expires": 3600},
+    },
+    "refresh-influence-panels": {
+        "task": "scheduler.tasks.refresh_influence_panels",
+        "schedule": crontab(hour=6, minute=0, day_of_week=1),  # weekly Monday 06:00 UTC
+        "options": {"expires": 86400},
+    },
+    "invalidate-stale-bundles": {
+        "task": "scheduler.tasks.invalidate_stale_bundles",
+        "schedule": crontab(minute=0, hour="*/2"),  # every 2 hours
+        "options": {"expires": 3600},
+    },
+    "download-cms-partd-spending": {
+        "task": "scheduler.tasks.download_cms_partd_spending",
+        "schedule": crontab(hour=6, minute=0, day_of_month=2),  # monthly 2nd at 06:00 UTC
+        "options": {"expires": 86400},
+    },
 }
 
 # Worker settings

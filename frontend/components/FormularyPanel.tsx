@@ -9,40 +9,20 @@ interface FormularyPanelProps {
 
 const PAYER_LABELS: Record<string, string> = {
   medicare_d: 'Medicare Part D',
-  medicaid: 'Medicaid',
+  medicaid:   'Medicaid',
   commercial: 'Commercial Ins.',
-  uninsured: 'Uninsured / OOP',
+  uninsured:  'Uninsured / OOP',
 };
 
 const PAYER_ORDER = ['medicare_d', 'medicaid', 'commercial', 'uninsured'];
 
 function tierColor(tier: string): string {
   const t = parseInt(tier, 10);
-  if (t <= 1) return 'var(--accent-green)';
-  if (t <= 2) return '#44ff88';
-  if (t <= 3) return 'var(--accent-amber)';
-  if (t <= 4) return '#ff8844';
-  return 'var(--accent-red)';
-}
-
-function tierBadge(tier: string) {
-  const color = tierColor(tier);
-  return (
-    <span
-      style={{
-        display: 'inline-block',
-        padding: '2px 6px',
-        border: `1px solid ${color}`,
-        color,
-        fontSize: '0.7rem',
-        fontWeight: 700,
-        background: `${color}12`,
-        borderRadius: '2px',
-      }}
-    >
-      TIER {tier}
-    </span>
-  );
+  if (t <= 1) return 'var(--green-bright)';
+  if (t <= 2) return '#4ade80';
+  if (t <= 3) return 'var(--amber)';
+  if (t <= 4) return '#f97316';
+  return 'var(--red-bright)';
 }
 
 export default function FormularyPanel({ data }: FormularyPanelProps) {
@@ -53,24 +33,17 @@ export default function FormularyPanel({ data }: FormularyPanelProps) {
   }, {});
 
   return (
-    <div className="panel-animate">
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.72rem' }}>
+    <div className="panel-in">
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.66rem' }}>
         <thead>
-          <tr style={{ borderBottom: '1px solid var(--border-accent)' }}>
-            {['Payer', 'Tier', 'Est. Cost / Month', 'PA Req.', 'Step Tx'].map(h => (
-              <th
-                key={h}
-                style={{
-                  textAlign: 'left',
-                  padding: '0.35rem 0.5rem',
-                  color: 'var(--text-muted)',
-                  fontWeight: 600,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  fontSize: '0.6rem',
-                  whiteSpace: 'nowrap',
-                }}
-              >
+          <tr style={{ borderBottom: '1px solid var(--border-red)' }}>
+            {['Payer', 'Tier', 'Est. Cost/Mo', 'PA', 'Step Tx'].map(h => (
+              <th key={h} style={{
+                textAlign: 'left', padding: '0.3rem 0.4rem',
+                color: 'var(--text-lo)', fontWeight: 700,
+                letterSpacing: '0.08em', textTransform: 'uppercase',
+                fontSize: '0.56rem', whiteSpace: 'nowrap',
+              }}>
                 {h}
               </th>
             ))}
@@ -80,49 +53,46 @@ export default function FormularyPanel({ data }: FormularyPanelProps) {
           {PAYER_ORDER.map((cat, i) => {
             const item = byPayer[cat];
             if (!item) return (
-              <tr key={cat} style={{ borderBottom: '1px solid var(--border-primary)' }}>
-                <td style={{ padding: '0.45rem 0.5rem', color: 'var(--text-secondary)' }}>
-                  {PAYER_LABELS[cat]}
-                </td>
-                <td colSpan={4} style={{ padding: '0.45rem 0.5rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                  No data
-                </td>
+              <tr key={cat} style={{ borderBottom: '1px solid var(--border-dim)' }}>
+                <td style={{ padding: '0.35rem 0.4rem', color: 'var(--text-mid)' }}>{PAYER_LABELS[cat]}</td>
+                <td colSpan={4} style={{ padding: '0.35rem 0.4rem', color: 'var(--text-lo)', fontStyle: 'italic' }}>No data</td>
               </tr>
             );
 
-            const copayStr = item.estimated_copay_low !== null && item.estimated_copay_high !== null
+            const copayStr = item.estimated_copay_low != null && item.estimated_copay_high != null
               ? `$${item.estimated_copay_low}–$${item.estimated_copay_high}`
               : 'N/A';
+            const tc = tierColor(item.tier);
 
             return (
-              <tr
-                key={cat}
-                style={{
-                  borderBottom: '1px solid var(--border-primary)',
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
-                }}
-              >
-                <td style={{ padding: '0.45rem 0.5rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              <tr key={cat} style={{
+                borderBottom: '1px solid var(--border-dim)',
+                background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
+              }}>
+                <td style={{ padding: '0.35rem 0.4rem', color: 'var(--text-mid)', fontWeight: 500 }}>
                   {PAYER_LABELS[cat]}
                 </td>
-                <td style={{ padding: '0.45rem 0.5rem' }}>
-                  {tierBadge(item.tier)}
-                </td>
-                <td style={{ padding: '0.45rem 0.5rem', color: 'var(--text-primary)' }}>
-                  {copayStr}
-                </td>
-                <td style={{ padding: '0.45rem 0.5rem', textAlign: 'center' }}>
-                  <span title={item.prior_auth_required ? "Prior auth required" : "No PA required"}>
-                    {item.prior_auth_required
-                      ? <ShieldAlert size={14} style={{ color: 'var(--accent-amber)' }} />
-                      : <ShieldCheck size={14} style={{ color: 'var(--accent-green)' }} />
-                    }
+                <td style={{ padding: '0.35rem 0.4rem' }}>
+                  <span style={{
+                    display: 'inline-block', padding: '1px 5px',
+                    border: `1px solid ${tc}`, color: tc,
+                    fontSize: '0.6rem', fontWeight: 700,
+                    background: `${tc}12`,
+                  }}>
+                    T{item.tier}
                   </span>
                 </td>
-                <td style={{ padding: '0.45rem 0.5rem', textAlign: 'center' }}>
+                <td style={{ padding: '0.35rem 0.4rem', color: 'var(--text-hi)' }}>{copayStr}</td>
+                <td style={{ padding: '0.35rem 0.4rem', textAlign: 'center' }}>
+                  {item.prior_auth_required
+                    ? <ShieldAlert size={12} style={{ color: 'var(--amber)' }} />
+                    : <ShieldCheck size={12} style={{ color: 'var(--green)' }} />
+                  }
+                </td>
+                <td style={{ padding: '0.35rem 0.4rem', textAlign: 'center' }}>
                   {item.step_therapy_required
-                    ? <span style={{ color: 'var(--accent-amber)', fontSize: '0.65rem', fontWeight: 700 }}>YES</span>
-                    : <span style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>NO</span>
+                    ? <span style={{ color: 'var(--amber)', fontSize: '0.58rem', fontWeight: 700 }}>YES</span>
+                    : <span style={{ color: 'var(--text-lo)', fontSize: '0.58rem' }}>NO</span>
                   }
                 </td>
               </tr>
@@ -131,7 +101,7 @@ export default function FormularyPanel({ data }: FormularyPanelProps) {
         </tbody>
       </table>
 
-      <div style={{ marginTop: '0.5rem', fontSize: '0.6rem', color: 'var(--text-muted)' }}>
+      <div style={{ marginTop: '0.4rem', fontSize: '0.56rem', color: 'var(--text-lo)' }}>
         Source: CMS Part D {data[0]?.cms_data_quarter || '2024Q4'} · Copays are estimated averages
       </div>
     </div>

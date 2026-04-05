@@ -54,7 +54,7 @@ async def get_trials(rxcui: str, drug_name: str) -> List[TrialSummary]:
         "pageSize": "20",
         "fields": _FIELDS,
     }
-    data = await fetch_with_retry(url, params=params)
+    data = await fetch_with_retry(url, params=params, max_retries=1, base_delay=0.2, timeout_seconds=4.0)
     trials: List[TrialSummary] = []
 
     if data:

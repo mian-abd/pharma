@@ -9,91 +9,58 @@ interface AIInsightsPanelProps {
 }
 
 const SOURCE_LABELS: Record<string, string> = {
-  faers: 'FAERS / openFDA',
-  clinical_trials: 'ClinicalTrials.gov',
-  formulary: 'CMS Part D',
-  fda_signals: 'FDA Enforcement',
-  ai_synthesis: 'Claude AI (Anthropic)',
+  faers:          'FAERS / openFDA',
+  clinical_trials:'ClinicalTrials.gov',
+  formulary:      'CMS Part D',
+  fda_signals:    'FDA Enforcement',
+  ai_synthesis:   'Claude AI (Anthropic)',
 };
-
-function StatusDot({ status }: { status: string }) {
-  const color = status === 'live' ? 'var(--accent-green)' : status === 'degraded' ? 'var(--accent-amber)' : 'var(--accent-red)';
-  const isLive = status === 'live';
-  return (
-    <span
-      style={{
-        display: 'inline-block',
-        width: '6px',
-        height: '6px',
-        borderRadius: '50%',
-        background: color,
-        animation: isLive ? 'pulse-green 2s infinite' : 'none',
-        flexShrink: 0,
-      }}
-    />
-  );
-}
 
 export default function AIInsightsPanel({ drug }: AIInsightsPanelProps) {
   const breakdown = drug.trust_score_breakdown;
-  const repBrief = drug.rep_brief;
+  const repBrief  = drug.rep_brief;
 
   return (
-    <div
-      className="panel-animate"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-        height: '100%',
-      }}
-    >
-      {/* Trust gauge with full breakdown */}
-      <div style={{ borderBottom: '1px solid var(--border-primary)', paddingBottom: '0.75rem' }}>
+    <div className="panel-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+
+      {/* Trust gauge */}
+      <div style={{ borderBottom: '1px solid var(--border-mid)', paddingBottom: '0.65rem' }}>
         <div className="panel-header">
-          <Activity size={10} style={{ display: 'inline', marginRight: '4px' }} />
-          Evidence Score
+          <Activity size={9} style={{ color: 'var(--red)' }} />
+          Evidence Risk Score
         </div>
-        <div className="flex justify-center">
-          <TrustGauge score={drug.trust_score} breakdown={breakdown} size={130} />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <TrustGauge score={drug.trust_score} breakdown={breakdown} size={120} />
         </div>
       </div>
 
-      {/* AI 3-sentence brief */}
+      {/* AI summary */}
       {repBrief && (
-        <div style={{ borderBottom: '1px solid var(--border-primary)', paddingBottom: '0.75rem' }}>
+        <div style={{ borderBottom: '1px solid var(--border-mid)', paddingBottom: '0.65rem' }}>
           <div className="panel-header">
-            <Cpu size={10} style={{ display: 'inline', marginRight: '4px' }} />
+            <Cpu size={9} style={{ color: 'var(--red)' }} />
             AI Assessment
           </div>
-          <div
-            style={{
-              fontSize: '0.72rem',
-              color: 'var(--text-secondary)',
-              lineHeight: 1.5,
-            }}
-          >
+          <div style={{ fontSize: '0.66rem', color: 'var(--text-mid)', lineHeight: 1.55 }}>
             {repBrief.reality[0] && (
               <p style={{ margin: '0 0 0.35rem' }}>
-                <span style={{ color: 'var(--accent-green)' }}>▸ </span>
-                {repBrief.reality[0]}
+                <span style={{ color: 'var(--green-bright)' }}>▸ </span>{repBrief.reality[0]}
               </p>
             )}
             {repBrief.absolute_vs_relative_note && (
               <p style={{ margin: '0 0 0.35rem' }}>
-                <span style={{ color: 'var(--accent-amber)' }}>▸ </span>
-                {repBrief.absolute_vs_relative_note}
+                <span style={{ color: 'var(--amber)' }}>▸ </span>{repBrief.absolute_vs_relative_note}
               </p>
             )}
             {repBrief.study_limitations && (
-              <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-                <span style={{ color: 'var(--accent-red)' }}>▸ </span>
-                {repBrief.study_limitations.slice(0, 120)}{repBrief.study_limitations.length > 120 ? '…' : ''}
+              <p style={{ margin: 0, color: 'var(--text-lo)' }}>
+                <span style={{ color: 'var(--red)' }}>▸ </span>
+                {repBrief.study_limitations.slice(0, 120)}…
               </p>
             )}
           </div>
           {repBrief.generation_latency_ms && (
-            <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
+            <div style={{ fontSize: '0.56rem', color: 'var(--text-lo)', marginTop: '0.35rem' }}>
               Generated in {repBrief.generation_latency_ms}ms
             </div>
           )}
@@ -101,40 +68,24 @@ export default function AIInsightsPanel({ drug }: AIInsightsPanelProps) {
       )}
 
       {/* Data sources */}
-      <div style={{ marginTop: 'auto' }}>
+      <div>
         <div className="panel-header">
-          <Database size={10} style={{ display: 'inline', marginRight: '4px' }} />
-          Data Sources
+          <Database size={9} /> Data Sources
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          {Object.entries(SOURCE_LABELS).map(([key, label]) => {
-            const status = drug.source_statuses[key] || 'unavailable';
-            return (
-              <div
-                key={key}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  fontSize: '0.68rem',
-                }}
-              >
-                <StatusDot status={status} />
-                <span style={{ flex: 1, color: 'var(--text-secondary)' }}>{label}</span>
-                <span
-                  style={{
-                    color: status === 'live' ? 'var(--accent-green)' : status === 'degraded' ? 'var(--accent-amber)' : 'var(--text-muted)',
-                    fontSize: '0.6rem',
-                    textTransform: 'uppercase',
-                    fontWeight: 600,
-                  }}
-                >
-                  {status}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        {Object.entries(SOURCE_LABELS).map(([key, label]) => {
+          const status = drug.source_statuses[key] || 'unavailable';
+          return (
+            <div key={key} className="data-row">
+              <span style={{ fontSize: '0.62rem', color: 'var(--text-lo)' }}>{label}</span>
+              <span style={{
+                fontSize: '0.56rem', fontWeight: 700,
+                color: status === 'live' ? 'var(--green-bright)' : status === 'degraded' ? 'var(--amber)' : 'var(--text-lo)',
+              }}>
+                {status === 'live' ? '● ' : '○ '}{status.toUpperCase()}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

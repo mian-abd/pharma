@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from services.shared.cache import cache_get, cache_set
 from services.shared.config import settings
+from services.shared.demo_data import get_seed_drug, iter_seed_names
 from services.shared.http_client import fetch_with_retry
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,18 @@ async def resolve_drug(drug_name: str) -> Optional[DrugResolutionResult]:
     cached = await cache_get(cache_key)
     if cached:
         return DrugResolutionResult(**cached)
+
+    seed = get_seed_drug(drug_name)
+    if seed:
+        result = DrugResolutionResult(
+            rxcui=seed["rxcui"],
+            brand_name=seed["brand_name"],
+            generic_name=seed["generic_name"],
+            synonyms=[alias for alias in seed["aliases"] if alias.lower() != drug_name.lower()],
+            drug_class=seed["drug_class"],
+        )
+        await cache_set(cache_key, result.model_dump(), ttl=settings.ttl_rxnorm)
+        return result
 
     # Step 1: Get RXCUI
     rxcui = await _get_rxcui(drug_name)
@@ -58,7 +71,7 @@ async def resolve_drug(drug_name: str) -> Optional[DrugResolutionResult]:
 async def _get_rxcui(drug_name: str) -> Optional[str]:
     """Call RxNorm REST API to resolve drug name to RXCUI."""
     url = f"{RXNORM_BASE}/REST/rxcui.json"
-    data = await fetch_with_retry(url, params={"name": drug_name, "search": "1"})
+    data = await fetch_with_retry(url, params={"name": drug_name, "search": "1"}, max_retries=1, base_delay=0.15, timeout_seconds=2.5)
     if not data:
         return None
     try:
@@ -71,7 +84,7 @@ async def _get_rxcui(drug_name: str) -> Optional[str]:
 async def _get_all_related(rxcui: str) -> dict:
     """Fetch all related concept names: brand, generic, synonyms."""
     url = f"{RXNORM_BASE}/REST/rxcui/{rxcui}/allrelated.json"
-    data = await fetch_with_retry(url)
+    data = await fetch_with_retry(url, max_retries=1, base_delay=0.15, timeout_seconds=2.5)
     if not data:
         return {}
 
@@ -97,7 +110,7 @@ async def _get_all_related(rxcui: str) -> dict:
 async def _get_drug_class(rxcui: str) -> str:
     """Get ATC drug class for an RXCUI."""
     url = f"{RXNORM_BASE}/REST/rxclass/class/byRxcui.json"
-    data = await fetch_with_retry(url, params={"rxcui": rxcui, "relaSource": "ATC"})
+    data = await fetch_with_retry(url, params={"rxcui": rxcui, "relaSource": "ATC"}, max_retries=1, base_delay=0.15, timeout_seconds=2.5)
     if not data:
         return ""
     try:
@@ -109,9 +122,66 @@ async def _get_drug_class(rxcui: str) -> str:
     return ""
 
 
+def _normalize_suggestion_list(raw) -> List[str]:
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        return [raw] if raw else []
+    if isinstance(raw, list):
+        return [s for s in raw if isinstance(s, str) and s]
+    return []
+
+
+def _spellings_from_response(data: object) -> List[str]:
+    if not isinstance(data, dict):
+        return []
+    try:
+        raw = data["suggestionGroup"]["suggestionList"]["suggestion"]
+    except (KeyError, TypeError):
+        return []
+    return _normalize_suggestion_list(raw)
+
+
+def _approximate_names_from_response(data: object) -> List[str]:
+    if not isinstance(data, dict):
+        return []
+    try:
+        group = data["approximateGroup"]
+        candidates = group["candidate"]
+    except (KeyError, TypeError):
+        return []
+    if isinstance(candidates, dict):
+        candidates = [candidates]
+    if not isinstance(candidates, list):
+        return []
+    out: List[str] = []
+    for c in candidates:
+        if isinstance(c, dict):
+            name = c.get("name")
+            if isinstance(name, str) and name:
+                out.append(name)
+    return out
+
+
+def _merge_unique_ordered(parts: List[List[str]], cap: int) -> List[str]:
+    seen: set[str] = set()
+    out: List[str] = []
+    for lst in parts:
+        for s in lst:
+            key = s.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(s)
+            if len(out) >= cap:
+                return out
+    return out
+
+
 async def autocomplete(prefix: str) -> List[str]:
     """
-    Return spelling suggestions for a drug name prefix.
+    Return drug / ingredient / chemical name hints for a prefix.
+    Merges seed data, RxNorm approximateTerm, and spelling suggestions.
     Cached for 1 hour.
     """
     if len(prefix) < 2:
@@ -122,14 +192,34 @@ async def autocomplete(prefix: str) -> List[str]:
     if cached is not None:
         return cached
 
-    url = f"{RXNORM_BASE}/REST/spellingsuggestions.json"
-    data = await fetch_with_retry(url, params={"name": prefix})
-    suggestions: List[str] = []
-    if data:
-        try:
-            suggestions = data["suggestionGroup"]["suggestionList"]["suggestion"]
-        except (KeyError, TypeError):
-            pass
+    prefix_stripped = prefix.strip()
+    prefix_lower = prefix_stripped.lower()
+    local_matches = sorted(
+        {name for name in iter_seed_names() if name.lower().startswith(prefix_lower)},
+        key=str.lower,
+    )
 
-    await cache_set(cache_key, suggestions, ttl=settings.ttl_autocomplete)
-    return suggestions
+    approx: List[str] = []
+    url_approx = f"{RXNORM_BASE}/REST/approximateTerm.json"
+    data_approx = await fetch_with_retry(
+        url_approx,
+        params={"term": prefix_stripped, "maxEntries": "15"},
+        max_retries=1,
+        base_delay=0.15,
+        timeout_seconds=2.5,
+    )
+    if data_approx:
+        approx = _approximate_names_from_response(data_approx)
+
+    url_spell = f"{RXNORM_BASE}/REST/spellingsuggestions.json"
+    spell: List[str] = []
+    data_spell = await fetch_with_retry(
+        url_spell, params={"name": prefix_stripped}, max_retries=1, base_delay=0.15, timeout_seconds=2.0
+    )
+    if data_spell:
+        spell = _spellings_from_response(data_spell)
+
+    merged = _merge_unique_ordered([local_matches, approx, spell], cap=25)
+
+    await cache_set(cache_key, merged, ttl=settings.ttl_autocomplete)
+    return merged

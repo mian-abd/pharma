@@ -2,162 +2,114 @@
 
 import { useState } from 'react';
 import { TrialData } from '../types/pharma';
-import { Building2, FlaskConical, ExternalLink } from 'lucide-react';
+import { Building2, ExternalLink } from 'lucide-react';
 
 interface ClinicalTrialsProps {
   trials: TrialData[];
 }
 
-const PHASES = ['All', 'Phase 3', 'Phase 2', 'Phase 1'];
+const PHASES   = ['All', 'Phase 3', 'Phase 2', 'Phase 1'];
 const STATUSES = ['All', 'Completed', 'Recruiting', 'Active'];
 
-function phaseBadgeColor(phase: string): string {
+function phaseCls(phase: string) {
   if (phase.includes('3')) return 'badge-green';
   if (phase.includes('2')) return 'badge-amber';
-  if (phase.includes('1')) return 'badge-muted';
   return 'badge-muted';
 }
 
-function statusBadgeColor(status: string): string {
+function statusCls(status: string) {
   const s = status.toLowerCase();
-  if (s === 'completed') return 'badge-green';
-  if (s === 'recruiting' || s === 'active') return 'badge-blue';
+  if (s === 'completed')                        return 'badge-green';
+  if (s === 'recruiting' || s === 'active')     return 'badge-blue';
   if (s.includes('terminated') || s.includes('withdrawn')) return 'badge-red';
   return 'badge-muted';
 }
 
 export default function ClinicalTrials({ trials }: ClinicalTrialsProps) {
-  const [phaseFilter, setPhaseFilter] = useState('All');
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [phase,  setPhase]  = useState('All');
+  const [status, setStatus] = useState('All');
 
   const filtered = trials.filter(t => {
-    const matchPhase = phaseFilter === 'All' || t.phase.toLowerCase().includes(phaseFilter.toLowerCase().replace('phase ', ''));
-    const matchStatus = statusFilter === 'All' || t.status.toLowerCase() === statusFilter.toLowerCase();
-    return matchPhase && matchStatus;
+    const mp = phase  === 'All' || t.phase.toLowerCase().includes(phase.toLowerCase().replace('phase ', ''));
+    const ms = status === 'All' || t.status.toLowerCase() === status.toLowerCase();
+    return mp && ms;
   });
 
-  const industryCount = trials.filter(t => t.industry_sponsored).length;
-
   return (
-    <div className="panel-animate" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Stats row */}
-      <div style={{
-        display: 'flex',
-        gap: '1rem',
-        padding: '0.4rem 0',
-        borderBottom: '1px solid var(--border-primary)',
-        marginBottom: '0.5rem',
-        fontSize: '0.7rem',
-      }}>
-        <span style={{ color: 'var(--text-muted)' }}>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{trials.length}</span> total
-        </span>
-        <span style={{ color: 'var(--text-muted)' }}>
-          <span style={{ color: 'var(--accent-amber)', fontWeight: 600 }}>{industryCount}</span> industry
-        </span>
-        <span style={{ color: 'var(--text-muted)' }}>
-          <span style={{ color: 'var(--accent-green)', fontWeight: 600 }}>
-            {trials.filter(t => t.status.toLowerCase() === 'completed').length}
-          </span> completed
-        </span>
+    <div className="panel-in" style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: '3px', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+        {PHASES.map(p => (
+          <button key={p} onClick={() => setPhase(p)} style={{
+            fontSize: '0.58rem', padding: '2px 6px',
+            border: '1px solid',
+            borderColor: phase === p ? 'var(--green)' : 'var(--border-lit)',
+            color: phase === p ? 'var(--green-bright)' : 'var(--text-lo)',
+            background: phase === p ? 'var(--green-glow)' : 'transparent',
+            cursor: 'pointer', fontFamily: 'var(--font-mono)',
+          }}>{p}</button>
+        ))}
+        <span style={{ color: 'var(--border-lit)', margin: '0 2px' }}>|</span>
+        {STATUSES.map(s => (
+          <button key={s} onClick={() => setStatus(s)} style={{
+            fontSize: '0.58rem', padding: '2px 6px',
+            border: '1px solid',
+            borderColor: status === s ? 'var(--blue)' : 'var(--border-lit)',
+            color: status === s ? 'var(--blue-bright)' : 'var(--text-lo)',
+            background: status === s ? 'var(--blue-glow)' : 'transparent',
+            cursor: 'pointer', fontFamily: 'var(--font-mono)',
+          }}>{s}</button>
+        ))}
       </div>
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-        {PHASES.map(p => (
-          <button
-            key={p}
-            onClick={() => setPhaseFilter(p)}
-            style={{
-              fontSize: '0.65rem',
-              padding: '2px 6px',
-              border: '1px solid',
-              borderColor: phaseFilter === p ? 'var(--accent-green)' : 'var(--border-primary)',
-              color: phaseFilter === p ? 'var(--accent-green)' : 'var(--text-muted)',
-              background: phaseFilter === p ? 'rgba(0,255,136,0.06)' : 'transparent',
-              cursor: 'pointer',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            {p}
-          </button>
-        ))}
-        <span style={{ color: 'var(--border-primary)', margin: '0 4px' }}>|</span>
-        {STATUSES.map(s => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
-            style={{
-              fontSize: '0.65rem',
-              padding: '2px 6px',
-              border: '1px solid',
-              borderColor: statusFilter === s ? 'var(--accent-blue)' : 'var(--border-primary)',
-              color: statusFilter === s ? 'var(--accent-blue)' : 'var(--text-muted)',
-              background: statusFilter === s ? 'rgba(68,153,255,0.06)' : 'transparent',
-              cursor: 'pointer',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            {s}
-          </button>
-        ))}
+      {/* Results count */}
+      <div style={{ fontSize: '0.6rem', color: 'var(--text-lo)', marginBottom: '0.35rem' }}>
+        Showing <span style={{ color: 'var(--red-bright)', fontWeight: 600 }}>{filtered.length}</span> of {trials.length} trials
       </div>
 
       {/* Trial list */}
-      <div style={{ overflowY: 'auto', flex: 1 }}>
-        {filtered.length === 0 ? (
-          <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', padding: '1rem 0', textAlign: 'center' }}>
-            No trials match filters
-          </div>
-        ) : (
-          filtered.map(trial => (
-            <div
-              key={trial.nct_id}
-              style={{
-                padding: '0.5rem',
-                borderBottom: '1px solid var(--border-primary)',
-                marginBottom: '0.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginBottom: '4px' }}>
-                <span className={`badge ${phaseBadgeColor(trial.phase)}`} style={{ flexShrink: 0 }}>
-                  {trial.phase || 'N/A'}
+      {filtered.length === 0 ? (
+        <div style={{ fontSize: '0.68rem', color: 'var(--text-lo)', textAlign: 'center', padding: '1rem' }}>
+          No trials match filters
+        </div>
+      ) : (
+        filtered.map(trial => (
+          <div key={trial.nct_id} style={{
+            padding: '0.45rem',
+            borderBottom: '1px solid var(--border-dim)',
+            borderLeft: trial.industry_sponsored ? '2px solid var(--amber-dim)' : '2px solid transparent',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '5px', marginBottom: '3px', flexWrap: 'wrap' }}>
+              <span className={`badge ${phaseCls(trial.phase)}`}>{trial.phase || 'N/A'}</span>
+              <span className={`badge ${statusCls(trial.status)}`}>{trial.status}</span>
+              {trial.industry_sponsored && (
+                <span className="badge badge-amber" title="Industry-sponsored">
+                  <Building2 size={8} />IND
                 </span>
-                <span className={`badge ${statusBadgeColor(trial.status)}`} style={{ flexShrink: 0 }}>
-                  {trial.status}
-                </span>
-                {trial.industry_sponsored && (
-                  <span className="badge badge-amber" title="Industry-sponsored trial" style={{ flexShrink: 0 }}>
-                    <Building2 size={8} style={{ marginRight: '2px' }} />IND
-                  </span>
-                )}
-                {trial.has_results && (
-                  <span className="badge badge-green" style={{ flexShrink: 0 }}>RESULTS</span>
-                )}
-              </div>
-
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-primary)', lineHeight: 1.3, marginBottom: '4px' }}>
-                {trial.title}
-              </div>
-
-              <div style={{ display: 'flex', gap: '1rem', fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                {trial.enrollment && (
-                  <span>n={trial.enrollment.toLocaleString()}</span>
-                )}
-                <span>{trial.sponsor}</span>
-                <a
-                  href={`https://clinicaltrials.gov/study/${trial.nct_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: 'var(--accent-blue)', marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '2px' }}
-                >
-                  {trial.nct_id} <ExternalLink size={9} />
-                </a>
-              </div>
+              )}
+              {trial.has_results && <span className="badge badge-green">RESULTS</span>}
             </div>
-          ))
-        )}
-      </div>
+
+            <div style={{ fontSize: '0.66rem', color: '#94a3b8', lineHeight: 1.35, marginBottom: '3px' }}>
+              {trial.title}
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', fontSize: '0.58rem', color: 'var(--text-lo)', alignItems: 'center' }}>
+              {trial.enrollment && <span>n={trial.enrollment.toLocaleString()}</span>}
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                {trial.sponsor}
+              </span>
+              <a
+                href={`https://clinicaltrials.gov/study/${trial.nct_id}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{ color: 'var(--blue-bright)', display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}
+              >
+                {trial.nct_id} <ExternalLink size={8} />
+              </a>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }

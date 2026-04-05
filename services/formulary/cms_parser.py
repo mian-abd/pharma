@@ -1,19 +1,18 @@
 """CMS Part D formulary data parser -- tier, copay, PA, step therapy by payer category."""
 import io
 import logging
+from pathlib import Path
 from typing import Dict, List, Optional
+from zipfile import ZipFile
 
 import pandas as pd
 from pydantic import BaseModel
 
 from services.shared.cache import cache_get, cache_set
 from services.shared.config import settings
-from services.shared.http_client import fetch_with_retry
+from services.shared.http_client import fetch_bytes_with_retry, fetch_with_retry
 
 logger = logging.getLogger(__name__)
-
-# CMS Part D formulary file URL (latest quarter)
-CMS_FORMULARY_URL = "https://www.cms.gov/files/zip/2024-formulary-file.zip"
 
 # Payer categories we expose
 PAYER_CATEGORIES = ["medicare_d", "medicaid", "commercial", "uninsured"]
@@ -61,9 +60,37 @@ async def get_formulary_coverage(rxcui: str, drug_name: str) -> List[FormularyCo
     if cached is not None:
         return [FormularyCoverage(**fc) for fc in cached]
 
-    coverage = _get_estimated_coverage(rxcui)
+    coverage = await _get_live_or_estimated_coverage(rxcui)
     await cache_set(cache_key, [c.model_dump() for c in coverage], ttl=settings.ttl_formulary)
     return coverage
+
+
+async def _get_live_or_estimated_coverage(rxcui: str) -> List[FormularyCoverage]:
+    try:
+        zip_bytes = await _load_cms_formulary_bytes()
+        if zip_bytes:
+            live = parse_cms_zip(zip_bytes, rxcui)
+            if live:
+                return live
+    except Exception as exc:
+        logger.warning("Live CMS formulary parse failed for rxcui=%s: %s", rxcui, exc)
+    return _get_estimated_coverage(rxcui)
+
+
+async def _load_cms_formulary_bytes() -> Optional[bytes]:
+    if settings.cms_formulary_local_zip:
+        path = Path(settings.cms_formulary_local_zip)
+        if path.exists():
+            return path.read_bytes()
+
+    if settings.cms_formulary_url:
+        return await fetch_bytes_with_retry(
+            settings.cms_formulary_url,
+            max_retries=1,
+            base_delay=0.4,
+            timeout_seconds=10.0,
+        )
+    return None
 
 
 def _get_estimated_coverage(rxcui: str, quarter: str = "2024Q4") -> List[FormularyCoverage]:
@@ -125,3 +152,20 @@ def parse_cms_csv(csv_content: bytes, rxcui: str) -> List[FormularyCoverage]:
     except Exception as exc:
         logger.error("Error parsing CMS CSV: %s", exc)
         return _get_estimated_coverage(rxcui)
+
+
+def parse_cms_zip(zip_content: bytes, rxcui: str) -> List[FormularyCoverage]:
+    """Parse a CMS zip archive and return the first matching CSV parse result."""
+    with ZipFile(io.BytesIO(zip_content)) as archive:
+        for member in archive.namelist():
+            lower_name = member.lower()
+            if not lower_name.endswith((".csv", ".txt")):
+                continue
+            try:
+                content = archive.read(member)
+            except KeyError:
+                continue
+            parsed = parse_cms_csv(content, rxcui)
+            if parsed and (len(parsed) != len(_DEFAULT_FORMULARY) or any(item.payer_category == "medicare_d" for item in parsed)):
+                return parsed
+    return []

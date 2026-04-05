@@ -41,3 +41,6 @@ Thumbs.db
 
 # Docker
 *.log
+
+# Reference UI clone (optional local copy)
+health-insights-hub-temp/

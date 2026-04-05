@@ -8,7 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 
-from services.gateway.routers import drugs, health, search
+from services.gateway.routers import dashboard, drugs, health, news, panels, search
+from services.shared.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -20,13 +21,10 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS -- allow Next.js frontend in development and production
+# CORS -- origins from config (env var ALLOWED_ORIGINS for production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=settings.allowed_origins_list,
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],
@@ -37,8 +35,11 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Mount routers
 app.include_router(drugs.router, prefix="/api")
+app.include_router(panels.router, prefix="/api")
 app.include_router(search.router, prefix="/api")
 app.include_router(health.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")
+app.include_router(news.router, prefix="/api")
 
 
 @app.exception_handler(Exception)
@@ -90,4 +91,5 @@ async def root():
         "version": "1.0.0",
         "docs": "/docs",
         "health": "/api/health",
+        "dashboard_home": "/api/dashboard/home",
     }

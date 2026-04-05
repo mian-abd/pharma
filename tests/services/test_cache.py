@@ -1,10 +1,24 @@
 """Unit tests for cache helper -- mocking Redis to avoid live connection."""
 import json
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from services.shared.cache import cache_get, cache_set, cache_delete, cache_exists
+from services.shared import cache as cache_module
+from services.shared.cache import cache_delete, cache_exists, cache_get, cache_set
+
+
+@pytest.fixture(autouse=True)
+def reset_cache_state():
+    cache_module._pool = None
+    cache_module._redis_disabled_until = 0.0
+    cache_module._memory_store.clear()
+    cache_module._memory_recent_drugs.clear()
+    yield
+    cache_module._pool = None
+    cache_module._redis_disabled_until = 0.0
+    cache_module._memory_store.clear()
+    cache_module._memory_recent_drugs.clear()
 
 
 @pytest.fixture
@@ -53,7 +67,15 @@ async def test_cache_set_success(mock_redis):
 async def test_cache_set_returns_false_on_error(mock_redis):
     mock_redis.setex.side_effect = Exception("connection refused")
     result = await cache_set("key", {}, ttl=60)
-    assert result is False
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_cache_set_uses_memory_fallback(mock_redis):
+    mock_redis.setex.side_effect = Exception("connection refused")
+    await cache_set("fallback:key", {"value": 99}, ttl=60)
+    result = await cache_get("fallback:key")
+    assert result == {"value": 99}
 
 
 @pytest.mark.asyncio
