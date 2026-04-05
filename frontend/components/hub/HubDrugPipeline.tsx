@@ -44,7 +44,7 @@ export default function HubDrugPipeline({ mode, trending, peerRows, loading, onS
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <Pill className="w-3.5 h-3.5 text-primary" />
+          <Pill className="w-3.5 h-3.5 text-muted-foreground" />
           <span className="hub-panel-title">{mode === 'drug' ? 'Class peer grid' : 'Trending watchlist'}</span>
         </div>
         <span className="text-[10px] text-muted-foreground font-mono">{rows.length} ROWS</span>

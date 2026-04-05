@@ -31,17 +31,17 @@ export default function HubFaersChart({ mode, trending, faers, drugLabel }: Prop
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <DollarSign className="w-3.5 h-3.5 text-primary" />
+          <DollarSign className="w-3.5 h-3.5 text-muted-foreground" />
           <span className="hub-panel-title">{isDrug ? `FAERS — ${drugLabel || 'Drug'}` : 'FAERS volume (trending)'}</span>
         </div>
         {isDrug && (
-          <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
-            <span className="flex items-center gap-0.5">
-              <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+          <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: '#4F46E5' }} />
               Total
             </span>
-            <span className="flex items-center gap-0.5">
-              <span className="w-2 h-2 rounded-full bg-critical inline-block" />
+            <span className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground inline-block" />
               Serious
             </span>
           </div>
@@ -53,42 +53,42 @@ export default function HubFaersChart({ mode, trending, faers, drugLabel }: Prop
             <AreaChart data={drugData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
               <defs>
                 <linearGradient id="hubTot" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--blue, #3B82F6)" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="var(--blue, #3B82F6)" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="#4F46E5" stopOpacity={0.12} />
+                  <stop offset="100%" stopColor="#4F46E5" stopOpacity={0.01} />
                 </linearGradient>
                 <linearGradient id="hubSer" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--red, #EF4444)" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="var(--red, #EF4444)" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="#9CA3AF" stopOpacity={0.12} />
+                  <stop offset="100%" stopColor="#9CA3AF" stopOpacity={0.01} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="month" tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} width={28} />
+              <XAxis dataKey="month" tick={{ fontSize: 9, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 9, fill: '#9CA3AF' }} axisLine={false} tickLine={false} width={28} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'var(--bg-panel, #FFF)',
-                  border: '1px solid var(--border-mid, #E2E8F0)',
-                  borderRadius: 8,
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: 10,
                   fontSize: 11,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                 }}
               />
-              <Area type="monotone" dataKey="total" stroke="var(--blue, #3B82F6)" fill="url(#hubTot)" strokeWidth={1.5} />
-              <Area type="monotone" dataKey="serious" stroke="var(--red, #EF4444)" fill="url(#hubSer)" strokeWidth={1.5} />
+              <Area type="monotone" dataKey="total" stroke="#4F46E5" fill="url(#hubTot)" strokeWidth={1.5} />
+              <Area type="monotone" dataKey="serious" stroke="#9CA3AF" fill="url(#hubSer)" strokeWidth={1.5} />
             </AreaChart>
           ) : (
             <BarChart data={homeData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} width={32} />
+              <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 9, fill: '#9CA3AF' }} axisLine={false} tickLine={false} width={32} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'var(--bg-panel, #FFF)',
-                  border: '1px solid var(--border-mid, #E2E8F0)',
-                  borderRadius: 8,
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: 10,
                   fontSize: 11,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                 }}
               />
-              <Bar dataKey="faers" fill="var(--blue, #3B82F6)" radius={[3, 3, 0, 0]} opacity={0.85} name="FAERS reports" />
+              <Bar dataKey="faers" fill="#4F46E5" radius={[4, 4, 0, 0]} opacity={0.6} name="FAERS reports" />
             </BarChart>
           )}
         </ResponsiveContainer>

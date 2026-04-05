@@ -26,7 +26,7 @@ export default function HubClinicalTrials({ trials, loading }: Props) {
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <FlaskConical className="w-3.5 h-3.5 text-primary" />
+          <FlaskConical className="w-3.5 h-3.5 text-muted-foreground" />
           <span className="hub-panel-title">Clinical trials</span>
         </div>
         <span className="text-[10px] text-muted-foreground font-mono">{normalized.length} SHOWN</span>

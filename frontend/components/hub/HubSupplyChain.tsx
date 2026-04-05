@@ -42,7 +42,7 @@ export default function HubSupplyChain({ trending }: Props) {
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <Package className="w-3.5 h-3.5 text-primary" />
+          <Package className="w-3.5 h-3.5 text-muted-foreground" />
           <span className="hub-panel-title">Supply pressure</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -60,7 +60,7 @@ export default function HubSupplyChain({ trending }: Props) {
           <div className="flex justify-between items-center">
             <span className="text-[10px] text-muted-foreground font-mono">PRESSURE INDEX</span>
             <span className={`text-sm font-bold font-mono ${
-              displayPressure > 70 ? 'text-critical' : displayPressure > 40 ? 'text-warning' : 'text-primary'
+              displayPressure > 70 ? 'text-critical' : displayPressure > 40 ? 'text-warning' : 'text-foreground'
             }`}>
               {displayPressure.toFixed(0)}
             </span>
