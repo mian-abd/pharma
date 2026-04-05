@@ -113,10 +113,10 @@ export default function SearchBar({ onSelect, initialValue = '' }: SearchBarProp
           style={{
             position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 9999,
             background: 'var(--bg-panel)',
-            border: '1px solid rgba(34,197,94,0.22)',
+            border: '1px solid var(--border-mid, #E2E8F0)',
             borderTop: '1px solid var(--border-mid)',
             maxHeight: '200px', overflowY: 'auto',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
           }}
         >
           {suggestions.slice(0, 12).map((s, i) => (

@@ -22,7 +22,7 @@ function tagColor(tag: string | null): string {
 function severityDot(severity: string): string {
   if (severity === 'critical') return 'bg-critical';
   if (severity === 'high') return 'bg-warning';
-  if (severity === 'medium') return 'bg-yellow-400';
+  if (severity === 'medium') return 'bg-warning';
   return 'bg-primary';
 }
 
@@ -71,8 +71,8 @@ export default function HubMedicalNewsFeed({ alerts }: Props) {
             key={t}
             type="button"
             onClick={() => setTab(t)}
-            className={`text-[10px] font-medium px-2 py-0.5 rounded transition-colors whitespace-nowrap ${
-              tab === t ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-secondary'
+            className={`text-[10px] font-medium px-2.5 py-0.5 rounded-md transition-colors whitespace-nowrap ${
+              tab === t ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-secondary'
             }`}
           >
             {t}

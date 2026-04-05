@@ -103,7 +103,7 @@ export default function DrugWatchlist({ selectedDrug, onSelect, latestDrug }: Dr
             <span className={SIGNAL_DOT[entry.signalLevel] || 'dot-muted'} />
             <span style={{
               flex: 1,
-              color: entry.name === selectedDrug ? '#f1f5f9' : '#94a3b8',
+              color: entry.name === selectedDrug ? 'var(--text-hi)' : 'var(--text-lo)',
               fontWeight: entry.name === selectedDrug ? 600 : 400,
               overflow: 'hidden',
               textOverflow: 'ellipsis',

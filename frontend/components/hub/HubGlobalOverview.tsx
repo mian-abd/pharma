@@ -21,7 +21,7 @@ export default function HubGlobalOverview({ sourceHealth, trending, drugTrust }:
   const trend =
     riskScore > 55 ? 'Elevated' : riskScore > 35 ? 'Moderate' : 'Stable';
 
-  const stroke = riskScore > 55 ? 'hsl(0, 70%, 55%)' : riskScore > 35 ? 'hsl(38, 80%, 55%)' : 'hsl(145, 55%, 42%)';
+  const stroke = riskScore > 55 ? 'var(--red, #EF4444)' : riskScore > 35 ? 'var(--amber, #F59E0B)' : 'var(--green, #10B981)';
 
   const outbreaks = trending.slice(0, 5).map(t => ({
     disease: t.name,
@@ -53,7 +53,7 @@ export default function HubGlobalOverview({ sourceHealth, trending, drugTrust }:
         <div className="text-center">
           <div className="relative w-16 h-16 mx-auto">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 72 72">
-              <circle cx="36" cy="36" r="30" fill="none" stroke="hsl(220, 14%, 16%)" strokeWidth="6" />
+              <circle cx="36" cy="36" r="30" fill="none" stroke="var(--border-mid, #E2E8F0)" strokeWidth="5" />
               <circle
                 cx="36"
                 cy="36"

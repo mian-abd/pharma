@@ -12,10 +12,10 @@ interface TrustGaugeProps {
 }
 
 function scoreColor(score: number): string {
-  if (score < 30) return '#ef4444';
-  if (score < 55) return '#f59e0b';
-  if (score < 75) return '#22c55e';
-  return '#16a34a';
+  if (score < 30) return '#DC2626';
+  if (score < 55) return '#F59E0B';
+  if (score < 75) return '#10B981';
+  return '#059669';
 }
 
 function scoreLabel(score: number): string {

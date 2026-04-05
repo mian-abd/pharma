@@ -24,7 +24,7 @@ function resetLayout() {
 
 export default function HubLayersRail({ layers, onToggle }: Props) {
   return (
-    <aside className="w-[148px] shrink-0 border-r border-border bg-card/80 flex flex-col">
+    <aside className="w-[148px] shrink-0 border-r border-border bg-card flex flex-col">
       <div className="hub-panel-header border-b border-border">
         <div className="flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5 text-primary" />
@@ -54,7 +54,7 @@ export default function HubLayersRail({ layers, onToggle }: Props) {
         <button
           type="button"
           onClick={resetLayout}
-          className="w-full flex items-center gap-1.5 justify-center text-[9px] font-mono text-muted-foreground hover:text-foreground border border-border/60 rounded px-2 py-1.5 hover:bg-secondary/40 transition-colors"
+          className="w-full flex items-center gap-1.5 justify-center text-[9px] font-mono text-muted-foreground hover:text-foreground border border-border/40 rounded-md px-2 py-1.5 hover:bg-secondary transition-colors"
           title="Reset panel layout to default"
         >
           <LayoutGrid className="w-3 h-3" />

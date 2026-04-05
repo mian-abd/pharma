@@ -48,7 +48,7 @@ export default function DrugHeader({ drug }: DrugHeaderProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <h1 style={{
             fontSize: '1.1rem', fontWeight: 700,
-            color: hasSignal ? 'var(--red-bright)' : '#f1f5f9',
+            color: hasSignal ? 'var(--red-bright)' : 'var(--text-hi)',
             fontFamily: 'var(--font-mono)', lineHeight: 1,
             textShadow: hasSignal ? '0 0 10px var(--red-glow)' : 'none',
           }}>

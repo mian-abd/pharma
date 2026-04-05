@@ -19,7 +19,7 @@ const PAYER_ORDER = ['medicare_d', 'medicaid', 'commercial', 'uninsured'];
 function tierColor(tier: string): string {
   const t = parseInt(tier, 10);
   if (t <= 1) return 'var(--green-bright)';
-  if (t <= 2) return '#4ade80';
+  if (t <= 2) return 'var(--green, #10B981)';
   if (t <= 3) return 'var(--amber)';
   if (t <= 4) return '#f97316';
   return 'var(--red-bright)';
@@ -67,7 +67,7 @@ export default function FormularyPanel({ data }: FormularyPanelProps) {
             return (
               <tr key={cat} style={{
                 borderBottom: '1px solid var(--border-dim)',
-                background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
+                background: i % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.02)',
               }}>
                 <td style={{ padding: '0.35rem 0.4rem', color: 'var(--text-mid)', fontWeight: 500 }}>
                   {PAYER_LABELS[cat]}

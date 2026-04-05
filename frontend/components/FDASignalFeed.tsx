@@ -71,7 +71,7 @@ export default function FDASignalFeed({ signals }: FDASignalFeedProps) {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
                 fontSize: '0.66rem',
-                color: isFirst ? 'var(--red-bright)' : '#94a3b8',
+                color: isFirst ? 'var(--red-bright)' : 'var(--text-lo)',
                 fontWeight: isFirst ? 500 : 400,
                 lineHeight: 1.3,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',

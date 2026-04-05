@@ -53,40 +53,42 @@ export default function HubFaersChart({ mode, trending, faers, drugLabel }: Prop
             <AreaChart data={drugData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
               <defs>
                 <linearGradient id="hubTot" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(174, 60%, 45%)" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="hsl(174, 60%, 45%)" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--blue, #3B82F6)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--blue, #3B82F6)" stopOpacity={0.02} />
                 </linearGradient>
                 <linearGradient id="hubSer" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(0, 70%, 55%)" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="hsl(0, 70%, 55%)" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--red, #EF4444)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--red, #EF4444)" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="month" tick={{ fontSize: 9, fill: 'hsl(215, 12%, 50%)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 9, fill: 'hsl(215, 12%, 50%)' }} axisLine={false} tickLine={false} width={28} />
+              <XAxis dataKey="month" tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} width={28} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(220, 18%, 10%)',
-                  border: '1px solid hsl(220, 14%, 16%)',
-                  borderRadius: 6,
+                  backgroundColor: 'var(--bg-panel, #FFF)',
+                  border: '1px solid var(--border-mid, #E2E8F0)',
+                  borderRadius: 8,
                   fontSize: 11,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 }}
               />
-              <Area type="monotone" dataKey="total" stroke="hsl(174, 60%, 45%)" fill="url(#hubTot)" strokeWidth={1.2} />
-              <Area type="monotone" dataKey="serious" stroke="hsl(0, 70%, 55%)" fill="url(#hubSer)" strokeWidth={1.2} />
+              <Area type="monotone" dataKey="total" stroke="var(--blue, #3B82F6)" fill="url(#hubTot)" strokeWidth={1.5} />
+              <Area type="monotone" dataKey="serious" stroke="var(--red, #EF4444)" fill="url(#hubSer)" strokeWidth={1.5} />
             </AreaChart>
           ) : (
             <BarChart data={homeData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'hsl(215, 12%, 50%)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 9, fill: 'hsl(215, 12%, 50%)' }} axisLine={false} tickLine={false} width={32} />
+              <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 9, fill: 'var(--text-lo, #94A3B8)' }} axisLine={false} tickLine={false} width={32} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(220, 18%, 10%)',
-                  border: '1px solid hsl(220, 14%, 16%)',
-                  borderRadius: 6,
+                  backgroundColor: 'var(--bg-panel, #FFF)',
+                  border: '1px solid var(--border-mid, #E2E8F0)',
+                  borderRadius: 8,
                   fontSize: 11,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 }}
               />
-              <Bar dataKey="faers" fill="hsl(174, 60%, 45%)" radius={[2, 2, 0, 0]} opacity={0.9} name="FAERS reports" />
+              <Bar dataKey="faers" fill="var(--blue, #3B82F6)" radius={[3, 3, 0, 0]} opacity={0.85} name="FAERS reports" />
             </BarChart>
           )}
         </ResponsiveContainer>

@@ -90,7 +90,7 @@ export default function ClinicalTrials({ trials }: ClinicalTrialsProps) {
               {trial.has_results && <span className="badge badge-green">RESULTS</span>}
             </div>
 
-            <div style={{ fontSize: '0.66rem', color: '#94a3b8', lineHeight: 1.35, marginBottom: '3px' }}>
+            <div style={{ fontSize: '0.66rem', color: 'var(--text-lo)', lineHeight: 1.35, marginBottom: '3px' }}>
               {trial.title}
             </div>
 

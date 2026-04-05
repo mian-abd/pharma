@@ -19,11 +19,12 @@ const RadarTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: '#0b0b15', border: '1px solid #dc2626',
+      background: 'var(--bg-panel, #FFF)', border: '1px solid var(--border-mid, #E2E8F0)',
       padding: '6px 10px', fontSize: '0.65rem', fontFamily: 'var(--font-mono)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.08)', borderRadius: 8,
     }}>
-      <div style={{ color: '#dc2626', fontWeight: 700 }}>{payload[0]?.payload?.axis}</div>
-      <div style={{ color: '#f1f5f9' }}>{payload[0]?.value?.toFixed(0)} / 100</div>
+      <div style={{ color: '#3B82F6', fontWeight: 700 }}>{payload[0]?.payload?.axis}</div>
+      <div style={{ color: '#0F172A' }}>{payload[0]?.value?.toFixed(0)} / 100</div>
     </div>
   );
 };
@@ -32,10 +33,11 @@ const AreaTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: '#0b0b15', border: '1px solid #1a1a26',
+      background: 'var(--bg-panel, #FFF)', border: '1px solid var(--border-mid, #E2E8F0)',
       padding: '5px 8px', fontSize: '0.62rem', fontFamily: 'var(--font-mono)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.08)', borderRadius: 8,
     }}>
-      <div style={{ color: '#4b5563', marginBottom: 2 }}>{label}</div>
+      <div style={{ color: '#475569', marginBottom: 2 }}>{label}</div>
       {payload.map((p: any) => (
         <div key={p.dataKey} style={{ color: p.color }}>
           {p.name}: {p.value}
@@ -46,11 +48,11 @@ const AreaTooltip = ({ active, payload, label }: any) => {
 };
 
 function threatLevel(score: number): { label: string; color: string; cls: string } {
-  if (score < 25) return { label: 'CRITICAL', color: '#ff2020', cls: 'threat-critical' };
-  if (score < 45) return { label: 'HIGH',     color: '#ef4444', cls: 'threat-high' };
-  if (score < 65) return { label: 'MODERATE', color: '#f59e0b', cls: 'threat-medium' };
-  if (score < 80) return { label: 'LOW',      color: '#22c55e', cls: 'threat-low' };
-  return           { label: 'CLEAR',    color: '#16a34a', cls: 'threat-none' };
+  if (score < 25) return { label: 'CRITICAL', color: '#EF4444', cls: 'threat-critical' };
+  if (score < 45) return { label: 'HIGH',     color: '#DC2626', cls: 'threat-high' };
+  if (score < 65) return { label: 'MODERATE', color: '#F59E0B', cls: 'threat-medium' };
+  if (score < 80) return { label: 'LOW',      color: '#10B981', cls: 'threat-low' };
+  return           { label: 'CLEAR',    color: '#059669', cls: 'threat-none' };
 }
 
 export default function ThreatBoard({ drug }: ThreatBoardProps) {
@@ -75,7 +77,7 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
 
   const hasSignal = faers?.signal_flag ?? false;
   const trend     = faers?.trend_direction ?? 'stable';
-  const trendColor = trend === 'increasing' ? '#ef4444' : trend === 'decreasing' ? '#22c55e' : '#f59e0b';
+  const trendColor = trend === 'increasing' ? '#DC2626' : trend === 'decreasing' ? '#10B981' : '#F59E0B';
 
   return (
     <div style={{
@@ -99,10 +101,10 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
 
         <ResponsiveContainer width="100%" height={180}>
           <RadarChart data={radarData} margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>
-            <PolarGrid stroke="#1a1a26" strokeDasharray="2 2" />
+            <PolarGrid stroke="#F1F5F9" strokeDasharray="2 2" />
             <PolarAngleAxis
               dataKey="axis"
-              tick={{ fill: '#4b5563', fontSize: 9, fontFamily: 'var(--font-mono)' }}
+              tick={{ fill: '#94A3B8', fontSize: 9, fontFamily: 'var(--font-mono)' }}
             />
             <PolarRadiusAxis
               angle={90}
@@ -112,8 +114,8 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
             />
             <Radar
               dataKey="value"
-              stroke="#dc2626"
-              fill="#dc2626"
+              stroke="#3B82F6"
+              fill="#3B82F6"
               fillOpacity={0.15}
               strokeWidth={1.5}
             />
@@ -125,8 +127,8 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '0.25rem' }}>
           {[
             { label: 'Trust Score', value: `${drug.trust_score.toFixed(0)}`, color: tl.color },
-            { label: 'NNT (Trial)', value: drug.nnt_trial ? `1:${Math.round(drug.nnt_trial)}` : 'N/A', color: '#94a3b8' },
-            { label: 'ARR', value: drug.arr_trial ? `${drug.arr_trial.toFixed(1)}%` : 'N/A', color: '#94a3b8' },
+            { label: 'NNT (Trial)', value: drug.nnt_trial ? `1:${Math.round(drug.nnt_trial)}` : 'N/A', color: 'var(--text-lo)' },
+            { label: 'ARR', value: drug.arr_trial ? `${drug.arr_trial.toFixed(1)}%` : 'N/A', color: 'var(--text-lo)' },
           ].map(({ label, value, color }) => (
             <div key={label} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '1rem', fontWeight: 700, color, fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
@@ -152,14 +154,14 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
           <div style={{
             display: 'flex', alignItems: 'center', gap: '6px',
             padding: '0.3rem 0.5rem', marginBottom: '0.5rem',
-            background: 'rgba(220,38,38,0.08)',
-            border: '1px solid rgba(220,38,38,0.35)',
-            fontSize: '0.62rem', color: '#ef4444',
+            background: 'rgba(239,68,68,0.06)',
+            border: '1px solid rgba(239,68,68,0.20)',
+            fontSize: '0.62rem', color: '#DC2626',
           }}>
             <span className="dot-red" />
             <strong>SIGNAL DETECTED</strong>
             {faers?.proportional_reporting_ratio && (
-              <span style={{ color: '#94a3b8', marginLeft: '4px' }}>
+              <span style={{ color: 'var(--text-lo)', marginLeft: '4px' }}>
                 PRR = {faers.proportional_reporting_ratio.toFixed(2)}
               </span>
             )}
@@ -170,29 +172,29 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
           <AreaChart data={areaData} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
             <defs>
               <linearGradient id="totalG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#dc2626" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#3B82F6" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="seriousG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#6366F1" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="2 2" stroke="#111118" />
-            <XAxis dataKey="name" tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
+            <CartesianGrid strokeDasharray="2 2" stroke="#F1F5F9" />
+            <XAxis dataKey="name" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
             <Tooltip content={<AreaTooltip />} />
-            <Area type="monotone" dataKey="Total"  stroke="#dc2626" fill="url(#totalG)"  strokeWidth={1.5} dot={false} name="Total" />
-            <Area type="monotone" dataKey="Serious" stroke="#ef4444" fill="url(#seriousG)" strokeWidth={1.5} dot={false} name="Serious" />
+            <Area type="monotone" dataKey="Total"  stroke="#3B82F6" fill="url(#totalG)"  strokeWidth={1.5} dot={false} name="Total" />
+            <Area type="monotone" dataKey="Serious" stroke="#6366F1" fill="url(#seriousG)" strokeWidth={1.5} dot={false} name="Serious" />
           </AreaChart>
         </ResponsiveContainer>
 
         {/* FAERS stats */}
         <div style={{ display: 'flex', gap: '1px', marginTop: '0.4rem', background: 'var(--border-dim)' }}>
           {[
-            { label: '6mo Reports', value: (faers?.total_6mo_reports ?? 0).toLocaleString(), color: '#dc2626' },
-            { label: 'Serious',     value: (faers?.serious_6mo_reports ?? 0).toLocaleString(), color: '#ef4444' },
-            { label: 'Serious %',   value: `${((faers?.serious_ratio ?? 0) * 100).toFixed(1)}%`, color: '#f59e0b' },
+            { label: '6mo Reports', value: (faers?.total_6mo_reports ?? 0).toLocaleString(), color: '#EF4444' },
+            { label: 'Serious',     value: (faers?.serious_6mo_reports ?? 0).toLocaleString(), color: '#DC2626' },
+            { label: 'Serious %',   value: `${((faers?.serious_ratio ?? 0) * 100).toFixed(1)}%`, color: '#F59E0B' },
           ].map(({ label, value, color }) => (
             <div key={label} style={{
               flex: 1, padding: '0.3rem 0.4rem',
@@ -217,10 +219,10 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
           return (
             <div key={r.reaction} style={{ marginBottom: '4px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-                <span style={{ fontSize: '0.62rem', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+                <span style={{ fontSize: '0.62rem', color: 'var(--text-lo)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
                   {r.reaction}
                 </span>
-                <span style={{ fontSize: '0.62rem', color: '#dc2626', fontWeight: 700, flexShrink: 0 }}>
+                <span style={{ fontSize: '0.62rem', color: '#EF4444', fontWeight: 700, flexShrink: 0 }}>
                   {r.count.toLocaleString()}
                 </span>
               </div>
@@ -262,7 +264,7 @@ export default function ThreatBoard({ drug }: ThreatBoardProps) {
               <span style={{
                 flex: 1,
                 fontSize: '0.62rem',
-                color: isHigh ? '#ef4444' : '#94a3b8',
+                color: isHigh ? '#DC2626' : 'var(--text-lo)',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',

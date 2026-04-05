@@ -11,7 +11,7 @@ interface InfluencePanelProps {
   data: InfluencePanelType;
 }
 
-const PIE_COLORS = ['#dc2626', '#ef4444', '#f59e0b', '#b45309', '#991b1b'];
+const PIE_COLORS = ['#3B82F6', '#6366F1', '#8B5CF6', '#F59E0B', '#EF4444'];
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null;
@@ -82,10 +82,10 @@ export default function InfluencePanel({ data }: InfluencePanelProps) {
           <div className="panel-header panel-header-red">Year-over-Year Trend</div>
           <ResponsiveContainer width="100%" height={100}>
             <BarChart data={trendData} margin={{ top: 4, right: 4, left: -26, bottom: 0 }}>
-              <XAxis dataKey="year" tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="year" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="Total" fill="#dc2626" fillOpacity={0.85} radius={[2, 2, 0, 0]} name="Total" />
+              <Bar dataKey="Total" fill="#3B82F6" fillOpacity={0.85} radius={[2, 2, 0, 0]} name="Total" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -137,7 +137,7 @@ export default function InfluencePanel({ data }: InfluencePanelProps) {
             return (
               <div key={c.company} style={{ marginBottom: '5px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.64rem', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+                  <span style={{ fontSize: '0.64rem', color: 'var(--text-lo)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
                     {c.company}
                   </span>
                   <span style={{ fontSize: '0.64rem', color: 'var(--red-bright)', fontWeight: 600, flexShrink: 0 }}>

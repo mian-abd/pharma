@@ -1,117 +1,198 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
-/* Health-insights-hub + command-center tokens (Tailwind v4) */
+/* ============================================================
+   PharmaSignal Premium Design System
+   Clean, modern Arvio-inspired aesthetic.
+   Light mode default · premium dark via prefers-color-scheme.
+   ============================================================ */
+
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --color-background: hsl(220 20% 7%);
-  --color-foreground: hsl(210 20% 88%);
-  --color-card: hsl(220 18% 10%);
-  --color-card-foreground: hsl(210 20% 88%);
-  --color-primary: hsl(174 60% 45%);
-  --color-primary-foreground: hsl(220 20% 7%);
-  --color-secondary: hsl(220 16% 14%);
-  --color-secondary-foreground: hsl(210 20% 75%);
-  --color-muted: hsl(220 14% 12%);
-  --color-muted-foreground: hsl(215 12% 50%);
-  --color-border: hsl(220 14% 16%);
-  --color-destructive: hsl(0 65% 52%);
-  --color-success: hsl(145 55% 42%);
-  --color-warning: hsl(38 80% 55%);
-  --color-critical: hsl(0 70% 55%);
-  --color-elevated: hsl(25 80% 55%);
-  --color-stable: hsl(145 55% 42%);
+
+  --color-background: #F8FAFC;
+  --color-foreground: #0F172A;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #1E293B;
+  --color-primary: #3B82F6;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F1F5F9;
+  --color-secondary-foreground: #475569;
+  --color-muted: #F1F5F9;
+  --color-muted-foreground: #64748B;
+  --color-border: #E2E8F0;
+  --color-destructive: #EF4444;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-critical: #EF4444;
+  --color-elevated: #F97316;
+  --color-stable: #10B981;
 }
 
-/* ============================================================
-   PharmaSignal Command-Center Design System
-   Inspired by threat terminals and market workstations.
-   Near-black base, green systems layer, red risk layer.
-   ============================================================ */
-
+/* ── Light-mode CSS custom properties (legacy + extras) ────── */
 :root {
-  /* ── Backgrounds ────────────────────────────── */
-  --bg-void:       #030506;
-  --bg-base:       #070a0c;
-  --bg-panel:      #0d1114;
-  --bg-card:       #12181d;
-  --bg-input:      #091013;
-  --bg-hover:      #151d22;
+  --bg-void:       #F1F5F9;
+  --bg-base:       #F8FAFC;
+  --bg-panel:      #FFFFFF;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F1F5F9;
+  --bg-hover:      #F1F5F9;
 
-  /* ── Borders ──────────────────────────────────*/
-  --border-dim:    #11171b;
-  --border-mid:    #1a252b;
-  --border-lit:    #223239;
-  --border-red:    #7f1d1d;
+  --border-dim:    #F1F5F9;
+  --border-mid:    #E2E8F0;
+  --border-lit:    #CBD5E1;
+  --border-red:    #FECACA;
 
-  /* ── Red — PRIMARY accent (dominant) ───────── */
-  --red:           #dc2626;   /* primary red */
-  --red-bright:    #ef4444;   /* bright red for highlights */
-  --red-dim:       #991b1b;   /* muted/dark red */
-  --red-ultra:     #ff2020;   /* max urgency */
-  --red-glow:      rgba(220,38,38,0.18);
-  --red-glow-sm:   rgba(220,38,38,0.10);
+  --red:           #EF4444;
+  --red-bright:    #DC2626;
+  --red-dim:       #FCA5A5;
+  --red-ultra:     #DC2626;
+  --red-glow:      rgba(239,68,68,0.08);
+  --red-glow-sm:   rgba(239,68,68,0.04);
 
-  /* ── Amber — secondary warning ─────────────── */
-  --amber:         #f59e0b;
-  --amber-dim:     #b45309;
-  --amber-glow:    rgba(245,158,11,0.12);
+  --amber:         #F59E0B;
+  --amber-dim:     #FBBF24;
+  --amber-glow:    rgba(245,158,11,0.08);
 
-  /* ── Green — safe/clear only ───────────────── */
-  --green:         #16a34a;
-  --green-bright:  #22c55e;
-  --green-glow:    rgba(34,197,94,0.12);
+  --green:         #10B981;
+  --green-bright:  #059669;
+  --green-glow:    rgba(16,185,129,0.08);
 
-  /* ── Blue — neutral info ───────────────────── */
-  --blue:          #2563eb;
-  --blue-bright:   #38bdf8;
-  --blue-glow:     rgba(56,189,248,0.12);
+  --blue:          #3B82F6;
+  --blue-bright:   #2563EB;
+  --blue-glow:     rgba(59,130,246,0.08);
 
-  /* ── Purple — ML / AI ──────────────────────── */
-  --purple:        #7c3aed;
-  --purple-bright: #8b5cf6;
+  --purple:        #7C3AED;
+  --purple-bright: #6D28D9;
 
-  /* ── Text hierarchy ─────────────────────────── */
-  --text-hi:       #eef5fb;
-  --text-mid:      #9badbf;
-  --text-lo:       #5b6a78;
-  --text-dim:      #20303a;
-  --text-red:      #ef4444;
-  --text-amber:    #f59e0b;
-  --text-green:    #22c55e;
+  --text-hi:       #0F172A;
+  --text-mid:      #475569;
+  --text-lo:       #94A3B8;
+  --text-dim:      #CBD5E1;
+  --text-red:      #DC2626;
+  --text-amber:    #D97706;
+  --text-green:    #059669;
 
-  /* ── Fonts ──────────────────────────────────── */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --accent-green:  #10B981;
+  --accent-amber:  #F59E0B;
+  --accent-red:    #EF4444;
+  --accent-blue:   #3B82F6;
+  --accent-purple: #7C3AED;
+  --border-primary: rgba(59,130,246,0.25);
+  --border-accent:  rgba(59,130,246,0.18);
+  --text-muted:    #64748B;
+  --text-secondary: #475569;
 
-  /* ── Transitions ────────────────────────────── */
-  --t-fast: 0.10s ease;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+  --card-shadow:   0 1px 3px rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04);
+  --card-shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+
+  --t-fast: 0.12s ease;
   --t-mid:  0.22s ease;
 }
 
+/* ── Dark mode ─────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0B1121;
+    --color-foreground: #F1F5F9;
+    --color-card: #141D2F;
+    --color-card-foreground: #E2E8F0;
+    --color-primary: #60A5FA;
+    --color-primary-foreground: #0B1121;
+    --color-secondary: #1A2540;
+    --color-secondary-foreground: #94A3B8;
+    --color-muted: #1A2540;
+    --color-muted-foreground: #64748B;
+    --color-border: #1E2D4A;
+    --color-destructive: #F87171;
+    --color-success: #34D399;
+    --color-warning: #FBBF24;
+    --color-critical: #F87171;
+    --color-elevated: #FB923C;
+    --color-stable: #34D399;
+
+    --bg-void:       #070D1A;
+    --bg-base:       #0B1121;
+    --bg-panel:      #141D2F;
+    --bg-card:       #141D2F;
+    --bg-input:      #0E1628;
+    --bg-hover:      #1A2540;
+
+    --border-dim:    #111B2E;
+    --border-mid:    #1E2D4A;
+    --border-lit:    #2A3F5F;
+    --border-red:    #7F1D1D;
+
+    --red:           #F87171;
+    --red-bright:    #EF4444;
+    --red-dim:       #991B1B;
+    --red-ultra:     #FF4444;
+    --red-glow:      rgba(248,113,113,0.15);
+    --red-glow-sm:   rgba(248,113,113,0.08);
+
+    --amber:         #FBBF24;
+    --amber-dim:     #B45309;
+    --amber-glow:    rgba(251,191,36,0.12);
+
+    --green:         #34D399;
+    --green-bright:  #10B981;
+    --green-glow:    rgba(52,211,153,0.12);
+
+    --blue:          #60A5FA;
+    --blue-bright:   #3B82F6;
+    --blue-glow:     rgba(96,165,250,0.12);
+
+    --purple:        #A78BFA;
+    --purple-bright: #8B5CF6;
+
+    --text-hi:       #F1F5F9;
+    --text-mid:      #94A3B8;
+    --text-lo:       #64748B;
+    --text-dim:      #334155;
+    --text-red:      #F87171;
+    --text-amber:    #FBBF24;
+    --text-green:    #34D399;
+
+    --accent-green:  #34D399;
+    --accent-amber:  #FBBF24;
+    --accent-red:    #F87171;
+    --accent-blue:   #60A5FA;
+    --accent-purple: #A78BFA;
+    --border-primary: rgba(96,165,250,0.25);
+    --border-accent:  rgba(96,165,250,0.18);
+    --text-muted:    #64748B;
+    --text-secondary: #94A3B8;
+
+    --card-shadow:   0 1px 3px rgba(0,0,0,0.25), 0 2px 4px -1px rgba(0,0,0,0.15);
+    --card-shadow-hover: 0 4px 16px rgba(0,0,0,0.3), 0 2px 6px -1px rgba(0,0,0,0.2);
+  }
+}
+
+/* ── Base resets ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { font-size: 12px; color-scheme: dark; }
+html { font-size: 12px; color-scheme: light dark; }
 
 body {
-  background:
-    radial-gradient(circle at top left, rgba(34,197,94,0.06), transparent 22%),
-    radial-gradient(circle at top right, rgba(14,165,233,0.05), transparent 20%),
-    var(--bg-base);
+  background: linear-gradient(145deg, var(--bg-base) 0%, color-mix(in srgb, var(--blue) 3%, var(--bg-base)) 100%);
   color: var(--text-hi);
-  font-family: var(--font-mono);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   margin: 0; padding: 0;
-  line-height: 1.45;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
 
-/* ── Scrollbars ────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: var(--bg-void); }
-::-webkit-scrollbar-thumb { background: var(--border-red); border-radius: 1px; }
-::-webkit-scrollbar-thumb:hover { background: var(--red-dim); }
+/* ── Scrollbars ───────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-lit); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-lo); }
 
 /* ============================================================
    Panel system
@@ -119,26 +200,29 @@ body {
 .panel {
   background: var(--bg-panel);
   border: 1px solid var(--border-mid);
+  border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
 }
 
 .panel-signal {
   background: var(--bg-panel);
   border: 1px solid var(--border-red);
-  box-shadow: 0 0 0 1px var(--red-glow-sm) inset;
+  border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
 }
 
 .panel-header {
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-lo);
-  padding-bottom: 0.35rem;
+  padding-bottom: 0.4rem;
   border-bottom: 1px solid var(--border-mid);
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .panel-header-red {
@@ -147,41 +231,46 @@ body {
 }
 
 /* ============================================================
-   Badges — red is default
+   Badges
    ============================================================ */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.08rem 0.4rem;
+  padding: 0.15rem 0.45rem;
   font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   border: 1px solid;
+  border-radius: 0.35rem;
   line-height: 1.5;
-  gap: 3px;
+  gap: 4px;
 }
 
-.badge-red    { color: var(--red-bright); border-color: var(--red); background: var(--red-glow-sm); }
+.badge-red    { color: var(--red-bright); border-color: var(--red-dim); background: var(--red-glow); }
 .badge-amber  { color: var(--amber);      border-color: var(--amber-dim); background: var(--amber-glow); }
 .badge-green  { color: var(--green-bright); border-color: var(--green); background: var(--green-glow); }
 .badge-blue   { color: var(--blue-bright); border-color: var(--blue); background: var(--blue-glow); }
-.badge-purple { color: var(--purple-bright); border-color: var(--purple); background: rgba(124,58,237,0.10); }
+.badge-purple { color: var(--purple-bright); border-color: var(--purple); background: rgba(124,58,237,0.08); }
 .badge-muted  { color: var(--text-lo); border-color: var(--border-lit); background: transparent; }
 
 /* ============================================================
-   Live/pulse indicators
+   Animations
    ============================================================ */
+@keyframes pulse-blue {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--blue-glow); }
+  50%      { opacity: 0.6; box-shadow: 0 0 0 4px transparent; }
+}
 @keyframes pulse-red {
   0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--red-glow); }
-  50%       { opacity: 0.7; box-shadow: 0 0 0 4px transparent; }
+  50%      { opacity: 0.7; box-shadow: 0 0 0 4px transparent; }
 }
 @keyframes pulse-amber {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.5; }
+  50%      { opacity: 0.5; }
 }
 @keyframes panel-in {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes shimmer {
@@ -192,13 +281,14 @@ body {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-@keyframes glow-pulse-red {
-  0%, 100% { box-shadow: 0 0 6px var(--red-glow); }
-  50%       { box-shadow: 0 0 14px var(--red-glow), 0 0 2px var(--red); }
+@keyframes glow-pulse-blue {
+  0%, 100% { box-shadow: 0 0 8px var(--blue-glow); }
+  50%      { box-shadow: 0 0 18px var(--blue-glow), 0 0 3px var(--blue); }
 }
 
+/* ── Status dots ──────────────────────────────────────────── */
 .dot-red {
-  width: 5px; height: 5px; border-radius: 50%;
+  width: 6px; height: 6px; border-radius: 50%;
   background: var(--red);
   animation: pulse-red 1.5s infinite;
   display: inline-block;
@@ -206,7 +296,7 @@ body {
 }
 
 .dot-amber {
-  width: 5px; height: 5px; border-radius: 50%;
+  width: 6px; height: 6px; border-radius: 50%;
   background: var(--amber);
   animation: pulse-amber 2s infinite;
   display: inline-block;
@@ -214,33 +304,33 @@ body {
 }
 
 .dot-green {
-  width: 5px; height: 5px; border-radius: 50%;
+  width: 6px; height: 6px; border-radius: 50%;
   background: var(--green-bright);
   display: inline-block;
   flex-shrink: 0;
 }
 
 .dot-muted {
-  width: 5px; height: 5px; border-radius: 50%;
+  width: 6px; height: 6px; border-radius: 50%;
   background: var(--text-lo);
   display: inline-block;
   flex-shrink: 0;
 }
 
 /* ============================================================
-   Skeleton
+   Skeleton loader
    ============================================================ */
 .skeleton {
   background: linear-gradient(90deg, var(--border-dim) 25%, var(--bg-card) 50%, var(--border-dim) 75%);
   background-size: 1200px 100%;
   animation: shimmer 1.6s infinite linear;
-  border-radius: 1px;
+  border-radius: 0.35rem;
 }
 
 /* ============================================================
    Panel animation
    ============================================================ */
-.panel-in { animation: panel-in 0.2s ease-out forwards; }
+.panel-in { animation: panel-in 0.25s ease-out forwards; }
 
 /* ============================================================
    Tabs
@@ -250,50 +340,51 @@ body {
   border-bottom: 1px solid var(--border-mid);
   background: var(--bg-void);
   flex-shrink: 0;
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .tab {
-  padding: 0.45rem 0.8rem;
-  font-size: 0.6rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   background: transparent;
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: inherit;
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--text-lo);
-  transition: color var(--t-fast);
+  transition: color var(--t-fast), border-color var(--t-fast);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   flex-shrink: 0;
 }
 .tab:hover { color: var(--text-mid); }
 .tab-active {
-  color: var(--red-bright);
-  border-bottom-color: var(--red);
-  text-shadow: 0 0 8px var(--red-glow);
+  color: var(--blue);
+  border-bottom-color: var(--blue);
 }
 
 /* ============================================================
    Metric display
    ============================================================ */
 .metric-val {
-  font-size: 1.35rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 700;
   line-height: 1;
-  font-family: var(--font-mono);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-hi);
 }
 
 .metric-lbl {
-  font-size: 0.54rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-lo);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 /* ============================================================
@@ -301,11 +392,12 @@ body {
    ============================================================ */
 .signal-row {
   display: flex;
-  gap: 6px;
-  padding: 0.3rem 0;
+  gap: 8px;
+  padding: 0.35rem 0;
   border-bottom: 1px solid var(--border-dim);
   transition: background var(--t-fast);
   cursor: default;
+  border-radius: 0.25rem;
 }
 .signal-row:hover { background: var(--bg-hover); }
 
@@ -316,9 +408,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.22rem 0;
+  padding: 0.25rem 0;
   border-bottom: 1px solid var(--border-dim);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
 }
 .data-row:last-child { border-bottom: none; }
 
@@ -326,16 +418,16 @@ body {
    Bar fill
    ============================================================ */
 .bar-track {
-  height: 4px;
+  height: 5px;
   background: var(--border-mid);
-  border-radius: 1px;
+  border-radius: 999px;
   overflow: hidden;
   flex: 1;
 }
-.bar-red    { height: 100%; background: var(--red);   border-radius: 1px; transition: width 0.5s ease; }
-.bar-amber  { height: 100%; background: var(--amber); border-radius: 1px; transition: width 0.5s ease; }
-.bar-green  { height: 100%; background: var(--green); border-radius: 1px; transition: width 0.5s ease; }
-.bar-blue   { height: 100%; background: var(--blue-bright); border-radius: 1px; transition: width 0.5s ease; }
+.bar-red    { height: 100%; background: var(--red);   border-radius: 999px; transition: width 0.5s ease; }
+.bar-amber  { height: 100%; background: var(--amber); border-radius: 999px; transition: width 0.5s ease; }
+.bar-green  { height: 100%; background: var(--green); border-radius: 999px; transition: width 0.5s ease; }
+.bar-blue   { height: 100%; background: var(--blue);  border-radius: 999px; transition: width 0.5s ease; }
 
 /* ============================================================
    Keyboard hint
@@ -344,13 +436,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 3px;
-  min-width: 16px;
-  height: 14px;
+  padding: 1px 5px;
+  min-width: 18px;
+  height: 16px;
   font-size: 0.55rem;
   border: 1px solid var(--border-lit);
+  border-radius: 0.25rem;
   color: var(--text-lo);
-  background: var(--bg-card);
+  background: var(--bg-void);
 }
 
 /* ============================================================
@@ -368,10 +461,10 @@ body {
 .ticker-inner:hover { animation-play-state: paused; }
 
 /* ============================================================
-   Red glow panel (high-signal panels)
+   Glow panel (high-signal panels)
    ============================================================ */
 .glow-panel {
-  animation: glow-pulse-red 3s ease-in-out infinite;
+  animation: glow-pulse-blue 3s ease-in-out infinite;
 }
 
 /* ============================================================
@@ -387,17 +480,18 @@ body {
 .watchlist-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0.28rem 0.5rem;
-  font-size: 0.65rem;
+  gap: 8px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.68rem;
   cursor: pointer;
   border-bottom: 1px solid var(--border-dim);
   transition: background var(--t-fast);
+  border-radius: 0.25rem;
 }
 .watchlist-item:hover { background: var(--bg-hover); }
 .watchlist-item-active {
-  background: var(--bg-card);
-  border-left: 2px solid var(--red);
+  background: var(--bg-hover);
+  border-left: 3px solid var(--blue);
 }
 
 /* ============================================================
@@ -405,16 +499,17 @@ body {
    ============================================================ */
 .search-input {
   background: var(--bg-input);
-  border: 1px solid var(--border-lit);
+  border: 1px solid var(--border-mid);
+  border-radius: 0.5rem;
   color: var(--text-hi);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  padding: 0.35rem 0.6rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.65rem;
   outline: none;
   width: 100%;
-  transition: border-color var(--t-fast);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
 }
-.search-input:focus { border-color: var(--red-dim); }
+.search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow); }
 .search-input::placeholder { color: var(--text-lo); }
 
 /* ============================================================
@@ -426,13 +521,18 @@ body {
 .threat-low      { color: var(--green-bright); }
 .threat-none     { color: var(--text-lo); }
 
-/* ── Hub dashboard (health-insights-hub layout) ───────────────── */
+/* ── Hub dashboard (component-level classes) ──────────────── */
 @layer components {
   .hub-panel {
-    @apply bg-card border border-border rounded-md overflow-hidden flex flex-col;
+    @apply bg-card border border-border rounded-xl overflow-hidden flex flex-col;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.2s ease;
+  }
+  .hub-panel:hover {
+    box-shadow: var(--card-shadow-hover);
   }
   .hub-panel-header {
-    @apply flex items-center justify-between px-3 py-2 border-b border-border shrink-0;
+    @apply flex items-center justify-between px-3 py-2.5 border-b border-border shrink-0;
   }
   .hub-panel-title {
     @apply text-xs font-semibold uppercase tracking-wider text-muted-foreground;
@@ -441,23 +541,23 @@ body {
     @apply w-1.5 h-1.5 rounded-full bg-success animate-pulse;
   }
   .hub-tag {
-    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide;
+    @apply px-2 py-0.5 text-[10px] font-medium rounded-md uppercase tracking-wide;
   }
   .hub-tag-critical {
-    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-critical/15 text-critical;
+    @apply px-2 py-0.5 text-[10px] font-medium rounded-md uppercase tracking-wide bg-critical/10 text-critical;
   }
   .hub-tag-warning {
-    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-warning/15 text-warning;
+    @apply px-2 py-0.5 text-[10px] font-medium rounded-md uppercase tracking-wide bg-warning/10 text-warning;
   }
   .hub-tag-success {
-    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-success/15 text-success;
+    @apply px-2 py-0.5 text-[10px] font-medium rounded-md uppercase tracking-wide bg-success/10 text-success;
   }
   .hub-tag-info {
-    @apply px-1.5 py-0.5 text-[10px] font-medium rounded uppercase tracking-wide bg-primary/15 text-primary;
+    @apply px-2 py-0.5 text-[10px] font-medium rounded-md uppercase tracking-wide bg-primary/10 text-primary;
   }
   .hub-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: hsl(220 14% 16%) transparent;
+    scrollbar-color: var(--border-lit) transparent;
   }
 }
 
@@ -475,7 +575,7 @@ body {
 }
 
 /* ============================================================
-   react-grid-layout overrides — dark terminal theme
+   react-grid-layout overrides — premium theme
    ============================================================ */
 .react-grid-layout {
   position: relative;
@@ -486,9 +586,9 @@ body {
   transition-property: left, top, width, height;
 }
 .react-grid-item.react-grid-placeholder {
-  background: hsl(174 60% 45% / 0.15);
-  border: 1px dashed hsl(174 60% 45% / 0.5);
-  border-radius: 6px;
+  background: rgba(59,130,246,0.10);
+  border: 1.5px dashed rgba(59,130,246,0.45);
+  border-radius: 12px;
   transition-duration: 100ms;
   z-index: 2;
 }
@@ -508,31 +608,30 @@ body {
 .react-grid-item > .react-resizable-handle::after {
   content: '';
   position: absolute;
-  right: 2px;
-  bottom: 2px;
+  right: 3px;
+  bottom: 3px;
   width: 6px;
   height: 6px;
-  border-right: 2px solid hsl(174 60% 45% / 0.7);
-  border-bottom: 2px solid hsl(174 60% 45% / 0.7);
+  border-right: 2px solid rgba(59,130,246,0.55);
+  border-bottom: 2px solid rgba(59,130,246,0.55);
 }
-/* Drag handle hover glow on panel header */
 .hub-drag-handle {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 28px;
+  height: 30px;
   z-index: 10;
   cursor: grab;
-  border-radius: 6px 6px 0 0;
+  border-radius: 12px 12px 0 0;
   opacity: 0;
   transition: opacity 150ms, background 150ms;
 }
 .react-grid-item:hover .hub-drag-handle {
   opacity: 1;
-  background: hsl(174 60% 45% / 0.06);
+  background: rgba(59,130,246,0.04);
 }
 .hub-drag-handle:active {
   cursor: grabbing;
-  background: hsl(174 60% 45% / 0.12) !important;
+  background: rgba(59,130,246,0.08) !important;
 }

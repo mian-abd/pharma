@@ -248,10 +248,10 @@ export default function HubVideoPlayer() {
                 key={ch.id}
                 type="button"
                 onClick={() => selectChannel(ch)}
-                className={`text-[9px] font-mono px-2 py-0.5 border rounded-sm whitespace-nowrap transition-colors ${
+                className={`text-[9px] font-mono px-2 py-0.5 border rounded-md whitespace-nowrap transition-colors ${
                   activeChannel.id === ch.id
                     ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-secondary/40 text-muted-foreground border-border hover:bg-secondary'
+                    : 'bg-secondary/60 text-muted-foreground border-border hover:bg-secondary'
                 }`}
               >
                 {ch.label}
@@ -268,12 +268,12 @@ export default function HubVideoPlayer() {
                 onChange={e => { setCustomUrl(e.target.value); setCustomError(''); }}
                 onKeyDown={e => e.key === 'Enter' && handleCustomSubmit()}
                 placeholder="Paste YouTube URL / channel ID"
-                className="flex-1 bg-background border border-border rounded text-[9px] font-mono px-1.5 py-0.5 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary"
+                className="flex-1 bg-secondary border border-border rounded-md text-[9px] font-mono px-1.5 py-0.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
               />
               <button
                 type="button"
                 onClick={handleCustomSubmit}
-                className="text-[9px] font-mono bg-primary text-primary-foreground px-1.5 py-0.5 rounded hover:opacity-80"
+                className="text-[9px] font-mono bg-primary text-primary-foreground px-2 py-0.5 rounded-md hover:opacity-90 transition-opacity"
               >
                 ADD
               </button>

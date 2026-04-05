@@ -23,8 +23,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'var(--bg-panel)', border: '1px solid var(--border-red)',
+      background: 'var(--bg-panel, #FFF)', border: '1px solid var(--border-mid, #E2E8F0)',
       padding: '6px 10px', fontSize: '0.62rem', fontFamily: 'var(--font-mono)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.08)', borderRadius: 8,
     }}>
       <div style={{ color: 'var(--text-lo)', marginBottom: '3px' }}>{label}</div>
       {payload.map((p: any) => (
@@ -81,20 +82,20 @@ export default function AdverseEventPanel({ data }: AdverseEventPanelProps) {
           <AreaChart data={chartData} margin={{ top: 4, right: 6, left: -26, bottom: 0 }}>
             <defs>
               <linearGradient id="totG2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#dc2626" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#3B82F6" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="serG2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.45} />
-                <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#6366F1" stopOpacity={0.45} />
+                <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="2 2" stroke="#111118" />
-            <XAxis dataKey="name" tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
+            <CartesianGrid strokeDasharray="2 2" stroke="#F1F5F9" />
+            <XAxis dataKey="name" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
-            <Area type="monotone" dataKey="Total"  stroke="#dc2626" fill="url(#totG2)" strokeWidth={1.5} dot={false} name="Total" />
-            <Area type="monotone" dataKey="Serious" stroke="#ef4444" fill="url(#serG2)" strokeWidth={1.5} dot={false} name="Serious" />
+            <Area type="monotone" dataKey="Total"  stroke="#3B82F6" fill="url(#totG2)" strokeWidth={1.5} dot={false} name="Total" />
+            <Area type="monotone" dataKey="Serious" stroke="#6366F1" fill="url(#serG2)" strokeWidth={1.5} dot={false} name="Serious" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -105,10 +106,10 @@ export default function AdverseEventPanel({ data }: AdverseEventPanelProps) {
           <div className="panel-header panel-header-red">Top Adverse Reactions (MedDRA)</div>
           <ResponsiveContainer width="100%" height={145}>
             <BarChart data={reactionData} layout="vertical" margin={{ top: 0, right: 36, left: 0, bottom: 0 }}>
-              <XAxis type="number" tick={{ fill: '#4b5563', fontSize: 9 }} axisLine={false} tickLine={false} />
+              <XAxis type="number" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="name" tick={{ fill: '#94a3b8', fontSize: 9 }} width={105} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill="#dc2626" fillOpacity={0.85} radius={[0, 2, 2, 0]} name="Reports" />
+              <Bar dataKey="count" fill="#3B82F6" fillOpacity={0.85} radius={[0, 2, 2, 0]} name="Reports" />
             </BarChart>
           </ResponsiveContainer>
         </div>

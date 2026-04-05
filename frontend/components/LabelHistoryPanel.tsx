@@ -93,7 +93,7 @@ export default function LabelHistoryPanel({ history, shortage }: LabelHistoryPan
                   {/* Content */}
                   <div style={{
                     padding: '0.35rem 0.45rem',
-                    background: isFirst ? 'rgba(220,38,38,0.04)' : 'transparent',
+                    background: isFirst ? 'rgba(239,68,68,0.04)' : 'transparent',
                     border: isFirst ? '1px solid var(--border-red)' : '1px solid transparent',
                     borderBottom: '1px solid var(--border-dim)',
                   }}>
@@ -111,7 +111,7 @@ export default function LabelHistoryPanel({ history, shortage }: LabelHistoryPan
                       </span>
                       <span style={{ fontSize: '0.56rem', color: 'var(--text-lo)' }}>v{item.version}</span>
                     </div>
-                    <div style={{ fontSize: '0.64rem', color: isFirst ? '#94a3b8' : '#4b5563', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '0.64rem', color: isFirst ? 'var(--text-lo)' : 'var(--text-mid)', lineHeight: 1.4 }}>
                       {item.description}
                     </div>
                   </div>

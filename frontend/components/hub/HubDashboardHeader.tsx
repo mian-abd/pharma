@@ -97,11 +97,11 @@ export default function HubDashboardHeader({
 
   const threatBox =
     threatLevel === 'critical'
-      ? 'border-critical text-critical bg-critical/10'
+      ? 'border-critical/30 text-critical bg-critical/8'
       : threatLevel === 'elevated'
-        ? 'border-warning text-warning bg-warning/10'
+        ? 'border-warning/30 text-warning bg-warning/8'
         : threatLevel === 'watch'
-          ? 'border-primary text-primary bg-primary/10'
+          ? 'border-primary/30 text-primary bg-primary/8'
           : 'border-border text-muted-foreground bg-secondary';
 
   const scrollText = tickerItems.length ? tickerItems.join('   //   ') : 'PharmaSignal command center';
@@ -131,7 +131,7 @@ export default function HubDashboardHeader({
           ref={wrapRef}
           className="flex-1 max-w-xl min-w-[120px] relative"
         >
-          <div className="flex items-center gap-1 bg-secondary rounded px-2 py-1 border border-border">
+          <div className="flex items-center gap-1.5 bg-secondary rounded-lg px-2.5 py-1.5 border border-border transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
             <Search className="w-3 h-3 text-muted-foreground shrink-0" />
             <input
               id="hub-drug-search"
@@ -153,12 +153,12 @@ export default function HubDashboardHeader({
             )}
           </div>
           {open && (
-            <div className="absolute z-50 left-0 right-0 top-full mt-0.5 max-h-48 overflow-y-auto hub-scrollbar bg-card border border-border rounded shadow-lg">
+            <div className="absolute z-50 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto hub-scrollbar bg-card border border-border rounded-lg shadow-lg">
               {suggestions.slice(0, 12).map(s => (
                 <button
                   key={s}
                   type="button"
-                  className="w-full text-left px-2 py-1.5 text-[11px] font-mono hover:bg-secondary text-foreground border-b border-border/50 last:border-0"
+                  className="w-full text-left px-3 py-2 text-[11px] font-mono hover:bg-secondary text-foreground border-b border-border/30 last:border-0 transition-colors"
                   onClick={() => onPick(s)}
                 >
                   {s}
@@ -169,16 +169,16 @@ export default function HubDashboardHeader({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <div className={`hidden sm:flex items-center px-2 py-1 rounded border text-[10px] font-mono font-bold ${threatBox}`}>
+          <div className={`hidden sm:flex items-center px-2.5 py-1 rounded-md border text-[10px] font-mono font-bold ${threatBox}`}>
             {threatLabel}
           </div>
           <div className="hub-tag-info whitespace-nowrap">FDA WATCH</div>
           <div className="hub-tag-warning whitespace-nowrap">{alertCount} ALERTS</div>
           <div className="h-4 w-px bg-border hidden sm:block" />
-          <button type="button" className="p-1.5 hover:bg-secondary rounded hidden sm:block">
+          <button type="button" className="p-1.5 hover:bg-secondary rounded-md hidden sm:block transition-colors">
             <Bell className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
-          <button type="button" className="p-1.5 hover:bg-secondary rounded hidden sm:block">
+          <button type="button" className="p-1.5 hover:bg-secondary rounded-md hidden sm:block transition-colors">
             <Settings className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
@@ -186,7 +186,7 @@ export default function HubDashboardHeader({
 
       <div className="border-t border-border bg-background/80 overflow-hidden">
         <div className="flex items-stretch">
-          <div className="bg-primary text-primary-foreground text-[9px] font-bold px-2 flex items-center tracking-wider shrink-0">
+          <div className="bg-primary text-primary-foreground text-[9px] font-bold px-3 flex items-center tracking-wider shrink-0 rounded-r-md">
             TICKER
           </div>
           <div className="flex-1 overflow-hidden py-1 min-w-0">
