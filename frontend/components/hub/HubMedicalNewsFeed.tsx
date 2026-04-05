@@ -20,10 +20,10 @@ function tagColor(tag: string | null): string {
 }
 
 function severityDot(severity: string): string {
-  if (severity === 'critical') return 'bg-muted-foreground';
-  if (severity === 'high') return 'bg-muted-foreground';
-  if (severity === 'medium') return 'bg-muted-foreground/60';
-  return 'bg-muted-foreground/40';
+  if (severity === 'critical') return 'bg-critical';
+  if (severity === 'high') return 'bg-warning';
+  if (severity === 'medium') return 'bg-warning';
+  return 'bg-primary';
 }
 
 export default function HubMedicalNewsFeed({ alerts }: Props) {
@@ -53,7 +53,7 @@ export default function HubMedicalNewsFeed({ alerts }: Props) {
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <Newspaper className="w-3.5 h-3.5 text-muted-foreground" />
+          <Newspaper className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">Signal river</span>
         </div>
         <div className="flex items-center gap-2">
@@ -71,8 +71,8 @@ export default function HubMedicalNewsFeed({ alerts }: Props) {
             key={t}
             type="button"
             onClick={() => setTab(t)}
-            className={`text-[10px] font-medium px-2.5 py-0.5 rounded-full transition-colors whitespace-nowrap ${
-              tab === t ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/60'
+            className={`text-[10px] font-medium px-2.5 py-0.5 rounded-md transition-colors whitespace-nowrap ${
+              tab === t ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-secondary'
             }`}
           >
             {t}
@@ -94,7 +94,7 @@ export default function HubMedicalNewsFeed({ alerts }: Props) {
             >
               <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                 <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${severityDot(item.severity)}`} />
-                <span className="text-[10px] font-medium text-foreground font-mono">{item.source}</span>
+                <span className="text-[10px] font-semibold text-primary font-mono">{item.source}</span>
                 {item.tag && <span className={tagColor(item.tag)}>{item.tag}</span>}
                 {'pub_date' in item && item.pub_date && (
                   <span className="text-[9px] text-muted-foreground ml-auto font-mono">{item.pub_date}</span>

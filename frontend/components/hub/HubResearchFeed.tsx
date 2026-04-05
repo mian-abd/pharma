@@ -13,7 +13,7 @@ export default function HubResearchFeed({ publications, placeholder }: Props) {
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
+          <BookOpen className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">PubMed trail</span>
         </div>
         <span className="text-[10px] text-muted-foreground font-mono">{publications.length} ITEMS</span>
@@ -34,7 +34,7 @@ export default function HubResearchFeed({ publications, placeholder }: Props) {
             className="block px-3 py-2 border-b border-border/50 hover:bg-secondary/50 transition-colors group"
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold text-foreground font-mono">{p.journal}</span>
+              <span className="text-[10px] font-bold text-primary font-mono">{p.journal}</span>
               <span className="text-[10px] text-muted-foreground font-mono">{p.pub_date}</span>
               <ExternalLink className="w-2.5 h-2.5 text-muted-foreground opacity-0 group-hover:opacity-100 ml-auto" />
             </div>

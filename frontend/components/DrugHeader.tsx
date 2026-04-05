@@ -48,13 +48,14 @@ export default function DrugHeader({ drug }: DrugHeaderProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <h1 style={{
             fontSize: '1.1rem', fontWeight: 700,
-            color: 'var(--text-hi)',
+            color: hasSignal ? 'var(--red-bright)' : 'var(--text-hi)',
             fontFamily: 'var(--font-mono)', lineHeight: 1,
+            textShadow: hasSignal ? '0 0 10px var(--red-glow)' : 'none',
           }}>
             {drug.brand_name || drug.drug_name}
           </h1>
           {hasSignal && (
-            <AlertTriangle size={13} style={{ color: '#B91C1C', flexShrink: 0 }} />
+            <AlertTriangle size={13} style={{ color: 'var(--red)', flexShrink: 0 }} />
           )}
           {drug.fda_signals?.some(s => s.signal_type === 'SHORTAGE') && (
             <span className="badge badge-amber">
@@ -77,7 +78,7 @@ export default function DrugHeader({ drug }: DrugHeaderProps) {
         <MetricCell
           label="NNT (Trial)"
           value={drug.nnt_trial !== null ? `1:${Math.round(drug.nnt_trial!)}` : null}
-          color="#B91C1C"
+          color="var(--red-bright)"
         />
         <MetricCell
           label="NNT (RW)"

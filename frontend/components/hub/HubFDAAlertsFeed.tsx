@@ -14,7 +14,7 @@ const iconMap: Record<string, React.ReactNode> = {
   approval: <CheckCircle className="w-3 h-3 text-success" />,
   warning: <AlertTriangle className="w-3 h-3 text-warning" />,
   critical: <AlertTriangle className="w-3 h-3 text-critical" />,
-  pending: <Clock className="w-3 h-3 text-muted-foreground" />,
+  pending: <Clock className="w-3 h-3 text-primary" />,
 };
 
 function tagClass(tag: string | null): string {
@@ -30,7 +30,7 @@ export default function HubFDAAlertsFeed({ alerts, loading, onAlertClick }: Prop
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <FileText className="w-3.5 h-3.5 text-muted-foreground" />
+          <FileText className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">FDA & signals</span>
         </div>
         <div className="flex items-center gap-1.5">

@@ -95,7 +95,14 @@ export default function HubDashboardHeader({
     [onSelectDrug]
   );
 
-  const threatBox = 'border-border text-muted-foreground bg-secondary';
+  const threatBox =
+    threatLevel === 'critical'
+      ? 'border-critical/30 text-critical bg-critical/8'
+      : threatLevel === 'elevated'
+        ? 'border-warning/30 text-warning bg-warning/8'
+        : threatLevel === 'watch'
+          ? 'border-primary/30 text-primary bg-primary/8'
+          : 'border-border text-muted-foreground bg-secondary';
 
   const scrollText = tickerItems.length ? tickerItems.join('   //   ') : 'PharmaSignal command center';
 
@@ -104,10 +111,11 @@ export default function HubDashboardHeader({
       <div className="flex items-center justify-between px-3 py-2 gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-2 shrink-0">
-            <Activity className="w-4 h-4 text-primary" />
-            <span className="font-semibold text-sm tracking-tight text-foreground whitespace-nowrap">
-              Pharma<span className="text-primary">Signal</span>
+            <Activity className="w-5 h-5 text-primary" />
+            <span className="font-semibold text-sm tracking-wide text-foreground whitespace-nowrap">
+              PHARMA<span className="text-primary">SIGNAL</span>
             </span>
+            <span className="text-[10px] text-muted-foreground font-mono hidden sm:inline">v2</span>
           </div>
           <div className="h-4 w-px bg-border shrink-0" />
           <div className="flex items-center gap-1.5 shrink-0">
@@ -123,7 +131,7 @@ export default function HubDashboardHeader({
           ref={wrapRef}
           className="flex-1 max-w-xl min-w-[120px] relative"
         >
-          <div className="flex items-center gap-1.5 bg-secondary rounded-full px-3 py-1.5 border border-border/60 transition-colors focus-within:border-border">
+          <div className="flex items-center gap-1.5 bg-secondary rounded-lg px-2.5 py-1.5 border border-border transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
             <Search className="w-3 h-3 text-muted-foreground shrink-0" />
             <input
               id="hub-drug-search"
@@ -161,11 +169,11 @@ export default function HubDashboardHeader({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <div className={`hidden sm:flex items-center px-2.5 py-1 rounded-full text-[10px] font-mono font-medium ${threatBox}`}>
+          <div className={`hidden sm:flex items-center px-2.5 py-1 rounded-md border text-[10px] font-mono font-bold ${threatBox}`}>
             {threatLabel}
           </div>
-          <span className="text-[10px] font-medium text-muted-foreground hidden sm:inline">FDA</span>
-          <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">{alertCount} alerts</span>
+          <div className="hub-tag-info whitespace-nowrap">FDA WATCH</div>
+          <div className="hub-tag-warning whitespace-nowrap">{alertCount} ALERTS</div>
           <div className="h-4 w-px bg-border hidden sm:block" />
           <button type="button" className="p-1.5 hover:bg-secondary rounded-md hidden sm:block transition-colors">
             <Bell className="w-3.5 h-3.5 text-muted-foreground" />
@@ -176,14 +184,13 @@ export default function HubDashboardHeader({
         </div>
       </div>
 
-      <div className="border-t border-border/60 overflow-hidden">
+      <div className="border-t border-border bg-background/80 overflow-hidden">
         <div className="flex items-stretch">
-          <div className="text-[9px] font-medium text-muted-foreground px-3 flex items-center tracking-wider shrink-0 uppercase">
-            Ticker
+          <div className="bg-primary text-primary-foreground text-[9px] font-bold px-3 flex items-center tracking-wider shrink-0 rounded-r-md">
+            TICKER
           </div>
-          <div className="h-3 w-px bg-border/40 self-center shrink-0" />
-          <div className="flex-1 overflow-hidden py-0.5 min-w-0">
-            <div className="hub-marquee-track text-[10px] font-mono text-muted-foreground/70 px-2">
+          <div className="flex-1 overflow-hidden py-1 min-w-0">
+            <div className="hub-marquee-track text-[10px] font-mono text-muted-foreground px-2">
               <span className="whitespace-nowrap pr-16">{scrollText}</span>
               <span className="whitespace-nowrap pr-16">{scrollText}</span>
             </div>

@@ -165,12 +165,12 @@ function HubDashboardInner() {
       />
 
       {homeError && (
-        <div className="shrink-0 bg-secondary border-b border-border text-muted-foreground text-[10px] font-mono px-3 py-1">
-          Gateway unreachable — start the API or check `/api/dashboard/home`.
+        <div className="shrink-0 bg-critical/15 border-b border-critical text-critical text-[10px] font-mono px-3 py-1">
+          Gateway unreachable — start the API (`GATEWAY_URL`) or check `/api/dashboard/home`. Showing empty tiles until connected.
         </div>
       )}
       {selectedDrug && drugError && (
-        <div className="shrink-0 bg-secondary border-b border-border text-muted-foreground text-[10px] font-mono px-3 py-1">
+        <div className="shrink-0 bg-warning/15 border-b border-warning text-warning text-[10px] font-mono px-3 py-1">
           Drug snapshot failed for &quot;{selectedDrug}&quot;. Verify spelling and gateway logs.
         </div>
       )}
@@ -182,10 +182,10 @@ function HubDashboardInner() {
 
       {selectedDrug && drug && (
         <footer className="shrink-0 border-t border-border px-3 py-1 text-[10px] text-muted-foreground font-mono flex flex-wrap gap-x-4 gap-y-0.5">
-          <span className="text-foreground font-medium">ACTIVE: {drug.brand_name || drug.drug_name}</span>
+          <span className="text-primary font-semibold">ACTIVE: {drug.brand_name || drug.drug_name}</span>
           <span>Trust {Math.round(drug.trust_score)}</span>
           <span>{drug.trending_reason?.slice(0, 120)}</span>
-          <span className="ml-auto">Not for clinical use</span>
+          <span className="text-critical ml-auto">Not for clinical use</span>
         </footer>
       )}
     </div>
@@ -196,7 +196,7 @@ export default function HubDashboard() {
   return (
     <Suspense
       fallback={
-        <div className="h-screen bg-background text-muted-foreground flex items-center justify-center font-mono text-sm">
+        <div className="h-screen bg-background text-primary flex items-center justify-center font-mono text-sm">
           Initializing PharmaSignal board…
         </div>
       }

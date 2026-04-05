@@ -11,18 +11,17 @@ interface InfluencePanelProps {
   data: InfluencePanelType;
 }
 
-const PIE_COLORS = ['#4F46E5', '#818CF8', '#C7D2FE', '#D1D5DB', '#E5E7EB'];
+const PIE_COLORS = ['#3B82F6', '#6366F1', '#8B5CF6', '#F59E0B', '#EF4444'];
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB',
-      padding: '5px 8px', fontSize: 11, fontFamily: 'var(--font-mono)',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.06)', borderRadius: 10,
+      background: 'var(--bg-panel)', border: '1px solid var(--border-mid)',
+      padding: '5px 8px', fontSize: '0.62rem', fontFamily: 'var(--font-mono)',
     }}>
       {payload.map((p: any) => (
-        <div key={p.dataKey} style={{ color: p.color || '#4B5563' }}>
+        <div key={p.dataKey} style={{ color: p.color || 'var(--text-mid)' }}>
           {p.name}: {typeof p.value === 'number' && p.value > 1000
             ? `$${(p.value / 1000).toFixed(0)}k`
             : p.value}
@@ -64,7 +63,7 @@ export default function InfluencePanel({ data }: InfluencePanelProps) {
       {/* Summary metrics */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: 'var(--border-dim)' }}>
         {[
-          { label: 'Total Payments', value: fmt(data.total_payments_usd), color: '#4F46E5', Icon: DollarSign },
+          { label: 'Total Payments', value: fmt(data.total_payments_usd), color: 'var(--red-bright)', Icon: DollarSign },
           { label: 'HCPs Paid',      value: (data.hcp_count ?? 0).toLocaleString(), color: 'var(--amber)', Icon: Users },
           { label: 'Companies',      value: String(data.company_count ?? 0), color: 'var(--text-mid)', Icon: Building2 },
           { label: 'Avg / HCP',      value: fmt(avgPerHcp), color: 'var(--text-mid)', Icon: TrendingUp },
@@ -83,10 +82,10 @@ export default function InfluencePanel({ data }: InfluencePanelProps) {
           <div className="panel-header panel-header-red">Year-over-Year Trend</div>
           <ResponsiveContainer width="100%" height={100}>
             <BarChart data={trendData} margin={{ top: 4, right: 4, left: -26, bottom: 0 }}>
-              <XAxis dataKey="year" tick={{ fill: '#9CA3AF', fontSize: 9 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#9CA3AF', fontSize: 9 }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="year" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="Total" fill="#4F46E5" fillOpacity={0.5} radius={[2, 2, 0, 0]} name="Total" />
+              <Bar dataKey="Total" fill="#3B82F6" fillOpacity={0.85} radius={[2, 2, 0, 0]} name="Total" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -109,9 +108,8 @@ export default function InfluencePanel({ data }: InfluencePanelProps) {
                   ))}
                 </Pie>
                 <Tooltip formatter={(v: any) => fmt(v)} contentStyle={{
-                  backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB',
-                  borderRadius: 10, fontSize: 11, fontFamily: 'var(--font-mono)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                  background: 'var(--bg-panel)', border: '1px solid var(--border-mid)',
+                  fontSize: '0.62rem', fontFamily: 'var(--font-mono)',
                 }} />
               </PieChart>
             </ResponsiveContainer>
@@ -142,7 +140,7 @@ export default function InfluencePanel({ data }: InfluencePanelProps) {
                   <span style={{ fontSize: '0.64rem', color: 'var(--text-lo)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
                     {c.company}
                   </span>
-                  <span style={{ fontSize: '0.64rem', color: '#4F46E5', fontWeight: 600, flexShrink: 0 }}>
+                  <span style={{ fontSize: '0.64rem', color: 'var(--red-bright)', fontWeight: 600, flexShrink: 0 }}>
                     {fmt(c.total_usd)}
                   </span>
                 </div>

@@ -222,7 +222,7 @@ export default function HubVideoPlayer() {
     <div className="hub-panel h-full flex flex-col">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <Tv2 className="w-3.5 h-3.5 text-muted-foreground" />
+          <Tv2 className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">Live News</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -248,10 +248,10 @@ export default function HubVideoPlayer() {
                 key={ch.id}
                 type="button"
                 onClick={() => selectChannel(ch)}
-                className={`text-[9px] font-mono px-2 py-0.5 rounded-full whitespace-nowrap transition-colors ${
+                className={`text-[9px] font-mono px-2 py-0.5 border rounded-md whitespace-nowrap transition-colors ${
                   activeChannel.id === ch.id
-                    ? 'bg-secondary text-foreground'
-                    : 'text-muted-foreground hover:bg-secondary/60'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-secondary/60 text-muted-foreground border-border hover:bg-secondary'
                 }`}
               >
                 {ch.label}
@@ -268,12 +268,12 @@ export default function HubVideoPlayer() {
                 onChange={e => { setCustomUrl(e.target.value); setCustomError(''); }}
                 onKeyDown={e => e.key === 'Enter' && handleCustomSubmit()}
                 placeholder="Paste YouTube URL / channel ID"
-                className="flex-1 bg-secondary border border-border/60 rounded-full text-[9px] font-mono px-2 py-0.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/30"
+                className="flex-1 bg-secondary border border-border rounded-md text-[9px] font-mono px-1.5 py-0.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
               />
               <button
                 type="button"
                 onClick={handleCustomSubmit}
-                className="text-[9px] font-mono bg-secondary text-foreground px-2 py-0.5 rounded-full hover:bg-secondary/80 transition-colors"
+                className="text-[9px] font-mono bg-primary text-primary-foreground px-2 py-0.5 rounded-md hover:opacity-90 transition-opacity"
               >
                 ADD
               </button>
@@ -303,8 +303,8 @@ export default function HubVideoPlayer() {
                 }}
                 className="flex flex-col items-center gap-2 group"
               >
-                <div className="w-10 h-10 rounded-full bg-secondary border border-border flex items-center justify-center group-hover:bg-muted transition-colors">
-                  <Play className="w-4 h-4 text-foreground ml-0.5" />
+                <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                  <Play className="w-4 h-4 text-primary ml-0.5" />
                 </div>
                 <span className="text-[10px] font-mono text-muted-foreground group-hover:text-foreground">
                   {canEmbed ? `Play ${activeChannel.label}` : `Open ${activeChannel.label}`}
@@ -320,7 +320,7 @@ export default function HubVideoPlayer() {
                   href={externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[9px] font-mono text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex items-center gap-1 text-[9px] font-mono text-muted-foreground hover:text-primary transition-colors"
                 >
                   Open in YouTube <ExternalLink className="w-2.5 h-2.5" />
                 </a>

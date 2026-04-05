@@ -33,7 +33,7 @@ export default function HubMarketPulse({ featured, trending, onSelectDrug }: Pro
             onClick={() => onSelectDrug?.(f.name)}
           >
             <div className="text-[11px] font-semibold text-foreground">{f.name}</div>
-            <div className="text-[10px] text-muted-foreground font-mono">Trust {Math.round(f.trust_score)} · {f.alert_count} alerts</div>
+            <div className="text-[10px] text-primary font-mono">Trust {Math.round(f.trust_score)} · {f.alert_count} alerts</div>
             <p className="text-[9px] text-muted-foreground mt-0.5 line-clamp-2">{f.summary}</p>
           </button>
         ))}

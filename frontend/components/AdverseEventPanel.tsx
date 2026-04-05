@@ -12,9 +12,9 @@ interface AdverseEventPanelProps {
 }
 
 function TrendIcon({ direction }: { direction: string }) {
-  if (direction === 'increasing') return <TrendingUp size={11} style={{ color: '#B91C1C' }} />;
-  if (direction === 'decreasing') return <TrendingDown size={11} style={{ color: '#065F46' }} />;
-  return <Minus size={11} style={{ color: '#92400E' }} />;
+  if (direction === 'increasing') return <TrendingUp size={11} style={{ color: 'var(--red-bright)' }} />;
+  if (direction === 'decreasing') return <TrendingDown size={11} style={{ color: 'var(--green-bright)' }} />;
+  return <Minus size={11} style={{ color: 'var(--amber)' }} />;
 }
 
 const MONTHS = ['', 'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -23,9 +23,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB',
-      padding: '6px 10px', fontSize: 11, fontFamily: 'var(--font-mono)',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.06)', borderRadius: 10,
+      background: 'var(--bg-panel, #FFF)', border: '1px solid var(--border-mid, #E2E8F0)',
+      padding: '6px 10px', fontSize: '0.62rem', fontFamily: 'var(--font-mono)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.08)', borderRadius: 8,
     }}>
       <div style={{ color: 'var(--text-lo)', marginBottom: '3px' }}>{label}</div>
       {payload.map((p: any) => (
@@ -57,9 +57,9 @@ export default function AdverseEventPanel({ data }: AdverseEventPanelProps) {
         <div style={{
           display: 'flex', alignItems: 'center', gap: '7px',
           padding: '0.35rem 0.55rem',
-          background: 'rgba(79,70,229,0.04)',
-          border: '1px solid #E5E7EB',
-          fontSize: '0.65rem', color: '#B91C1C',
+          background: 'var(--red-glow)',
+          border: '1px solid var(--red-dim)',
+          fontSize: '0.65rem', color: 'var(--red-bright)',
         }}>
           <AlertTriangle size={11} />
           <strong>FAERS SIGNAL DETECTED</strong>
@@ -82,20 +82,20 @@ export default function AdverseEventPanel({ data }: AdverseEventPanelProps) {
           <AreaChart data={chartData} margin={{ top: 4, right: 6, left: -26, bottom: 0 }}>
             <defs>
               <linearGradient id="totG2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#4F46E5" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#3B82F6" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="serG2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#818CF8" stopOpacity={0.35} />
-                <stop offset="95%" stopColor="#818CF8" stopOpacity={0} />
+                <stop offset="5%"  stopColor="#6366F1" stopOpacity={0.45} />
+                <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="2 2" stroke="#F3F4F6" />
-            <XAxis dataKey="name" tick={{ fill: '#9CA3AF', fontSize: 9 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: '#9CA3AF', fontSize: 9 }} axisLine={false} tickLine={false} />
+            <CartesianGrid strokeDasharray="2 2" stroke="#F1F5F9" />
+            <XAxis dataKey="name" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
-            <Area type="monotone" dataKey="Total"  stroke="#4F46E5" fill="url(#totG2)" strokeWidth={1.5} dot={false} name="Total" />
-            <Area type="monotone" dataKey="Serious" stroke="#818CF8" fill="url(#serG2)" strokeWidth={1.5} dot={false} name="Serious" />
+            <Area type="monotone" dataKey="Total"  stroke="#3B82F6" fill="url(#totG2)" strokeWidth={1.5} dot={false} name="Total" />
+            <Area type="monotone" dataKey="Serious" stroke="#6366F1" fill="url(#serG2)" strokeWidth={1.5} dot={false} name="Serious" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -106,10 +106,10 @@ export default function AdverseEventPanel({ data }: AdverseEventPanelProps) {
           <div className="panel-header panel-header-red">Top Adverse Reactions (MedDRA)</div>
           <ResponsiveContainer width="100%" height={145}>
             <BarChart data={reactionData} layout="vertical" margin={{ top: 0, right: 36, left: 0, bottom: 0 }}>
-              <XAxis type="number" tick={{ fill: '#9CA3AF', fontSize: 9 }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" tick={{ fill: '#9CA3AF', fontSize: 9 }} width={105} axisLine={false} tickLine={false} />
+              <XAxis type="number" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fill: '#94a3b8', fontSize: 9 }} width={105} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill="#4F46E5" fillOpacity={0.5} radius={[0, 2, 2, 0]} name="Reports" />
+              <Bar dataKey="count" fill="#3B82F6" fillOpacity={0.85} radius={[0, 2, 2, 0]} name="Reports" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -118,10 +118,10 @@ export default function AdverseEventPanel({ data }: AdverseEventPanelProps) {
       {/* Summary stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1px', background: 'var(--border-dim)' }}>
         {[
-          { label: '6mo Reports',  value: data.total_6mo_reports.toLocaleString(),  color: '#B91C1C' },
-          { label: 'Serious',      value: data.serious_6mo_reports.toLocaleString(), color: '#B91C1C' },
-          { label: 'Serious %',    value: `${(data.serious_ratio * 100).toFixed(1)}%`, color: '#92400E' },
-          { label: 'Trend',        value: data.trend_direction,   color: data.trend_direction === 'increasing' ? '#B91C1C' : data.trend_direction === 'decreasing' ? '#065F46' : '#92400E' },
+          { label: '6mo Reports',  value: data.total_6mo_reports.toLocaleString(),  color: 'var(--red-bright)' },
+          { label: 'Serious',      value: data.serious_6mo_reports.toLocaleString(), color: 'var(--red)' },
+          { label: 'Serious %',    value: `${(data.serious_ratio * 100).toFixed(1)}%`, color: 'var(--amber)' },
+          { label: 'Trend',        value: data.trend_direction,   color: data.trend_direction === 'increasing' ? 'var(--red)' : data.trend_direction === 'decreasing' ? 'var(--green-bright)' : 'var(--amber)' },
         ].map(({ label, value, color }) => (
           <div key={label} style={{
             background: 'var(--bg-panel)', padding: '0.35rem',

@@ -15,7 +15,7 @@ export default function HubMarketMovers({ movers, loading, onSelectDrug }: Props
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
+          <BarChart3 className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">Market movers (Part D)</span>
         </div>
         <div className="flex items-center gap-1.5">

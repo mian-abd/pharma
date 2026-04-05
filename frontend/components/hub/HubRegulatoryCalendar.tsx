@@ -24,7 +24,7 @@ export default function HubRegulatoryCalendar() {
     <div className="hub-panel h-full">
       <div className="hub-panel-header">
         <div className="flex items-center gap-2">
-          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+          <Calendar className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">Regulatory calendar</span>
         </div>
         <div className="flex items-center gap-1.5">

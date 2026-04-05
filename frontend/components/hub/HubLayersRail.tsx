@@ -27,7 +27,7 @@ export default function HubLayersRail({ layers, onToggle }: Props) {
     <aside className="w-[148px] shrink-0 border-r border-border bg-card flex flex-col">
       <div className="hub-panel-header border-b border-border">
         <div className="flex items-center gap-1.5">
-          <Layers className="w-3.5 h-3.5 text-muted-foreground" />
+          <Layers className="w-3.5 h-3.5 text-primary" />
           <span className="hub-panel-title">Layers</span>
         </div>
       </div>
